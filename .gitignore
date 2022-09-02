@@ -1,0 +1,17 @@
+# CMake and build files
+debug/
+release/
+
+# VS Code
+.vscode/ipch/
+.vscode/tasks.json
+
+# VS
+.vs/
+
+# Project auto generated files
+
+# Project specific files
+
+# Temp files
+temp/
