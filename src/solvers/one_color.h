@@ -17,7 +17,7 @@ class OneColor : public Base {
 
   PSolver Clone() const override { return std::make_shared<OneColor>(*this); }
 
-  bool SkipSolutionRead() const override { return true; }
+  // bool SkipSolutionRead() const override { return true; }
 
   std::string Name() const override { return "one_color"; }
 

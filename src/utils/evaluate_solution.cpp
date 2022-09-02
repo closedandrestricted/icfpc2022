@@ -16,8 +16,8 @@ void EvaluateSolution(const std::string& solver_name) {
         std::to_string(i), solver_name);
     total += r.DScore();
     std::cout << "Problem " << std::to_string(1000 + i).substr(1) << "\t"
-              << r.correct << "\t" << r.score << "\t" << r.DScore()
-              << std::endl;
+              << r.correct << "\t" << r.DScore() << "\t" << r.cost_isl << "\t"
+              << r.cost_sim << std::endl;
   }
   std::cout << "Total = " << unsigned(total) << std::endl;
 }

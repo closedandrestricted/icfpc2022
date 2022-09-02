@@ -3,6 +3,7 @@
 #include "spng/spng.h"
 
 #include "common/base.h"
+#include "common/template.h"
 
 #include <iostream>
 
@@ -94,5 +95,6 @@ bool Image::Load(const std::string& filename) {
   spng_ctx_free(ctx);
   free(image);
 
+  FakeUse(ret);
   return true;
 }

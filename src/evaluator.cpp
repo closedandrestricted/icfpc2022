@@ -14,7 +14,6 @@ Evaluator::Result Evaluator::Apply(const Problem &p, const Solution &s) {
   for (const auto &m : s.Moves()) {
     c.Apply(m);
   }
-  double isl_cost = c.isl_cost;
-  double sim_cost = Similarity(p.Target(), c.image);
-  return Result(true, int64_t(isl_cost + sim_cost));
+  return Result(true, int64_t(c.isl_cost),
+                int64_t(Similarity(p.Target(), c.image)));
 }
