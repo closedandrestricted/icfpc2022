@@ -46,8 +46,21 @@ bool Move::Decode(const std::string& s) {
   }
   assert(vs.size() >= 3);
   if (vs[0] == "cut") {
-    // ...
-    return false;
+    assert(vs.size() == 4);
+    block_id1 = vs[1];
+    if (vs[2] == "x") {
+      type = LINE_CUT;
+      x = stoi(vs[3]);
+      y = 0;
+    } else if (vs[2] == "y") {
+      type = LINE_CUT;
+      x = 0;
+      y = stoi(vs[3]);
+    } else {
+      type = POINT_CUT;
+      x = stoi(vs[2]);
+      y = stoi(vs[3]);
+    }
   } else if (vs[0] == "color") {
     assert(vs.size() == 6);
     type = COLOR;
@@ -55,9 +68,17 @@ bool Move::Decode(const std::string& s) {
     for (unsigned i = 0; i < 4; ++i) {
       color.rgba[i] = stoi(vs[i + 2]);
     }
-    return true;
+  } else if (vs[0] == "swap") {
+    assert(vs.size() == 3);
+    type = SWAP;
+    block_id1 = vs[1];
+    block_id2 = vs[2];
+  } else if (vs[0] == "merge") {
+    assert(vs.size() == 3);
+    type = SWAP;
+    block_id1 = vs[1];
+    block_id2 = vs[2];
   } else {
-    // ...
     return false;
   }
   return true;
