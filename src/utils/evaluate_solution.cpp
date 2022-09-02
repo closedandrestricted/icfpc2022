@@ -19,5 +19,5 @@ void EvaluateSolution(const std::string& solver_name) {
               << r.correct << "\t" << r.score << "\t" << r.DScore()
               << std::endl;
   }
-  std::cout << "Total = " << total << std::endl;
+  std::cout << "Total = " << unsigned(total) << std::endl;
 }
