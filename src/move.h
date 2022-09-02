@@ -14,6 +14,8 @@ class Move {
   Pixel color;
 
   Move() : type(END), x(0), y(0) {}
+  Move(Type _type, const std::string& id, const Pixel& _color)
+      : type(_type), block_id1(id), x(0), y(0), color(_color) {}
 
   std::string Encode() const;
   bool Decode(const std::string& s);

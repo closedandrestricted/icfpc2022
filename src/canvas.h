@@ -24,13 +24,13 @@ class Canvas {
 
   double Size() const { return image.Size(); }
 
-  Block& Get(const std::string& id) { return blocks[id]; }
+  Block &Get(const std::string &id) { return blocks[id]; }
 
-  const Block& Get(const std::string& id) const {
+  const Block &Get(const std::string &id) const {
     auto it = blocks.find(id);
     assert(it != blocks.end());
     return it->second;
   }
 
-  void Apply(const Move& move);
+  void Apply(const Move &move);
 };

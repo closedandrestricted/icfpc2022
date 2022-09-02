@@ -2,10 +2,9 @@
 
 #include "settings.h"
 
-bool Problem::LoadI(const std::string& _id, const std::string& /*filename*/) {
+bool Problem::LoadI(const std::string& _id, const std::string& filename) {
   id = _id;
-  // ...
-  return true;
+  return target.Load(filename);
 }
 
 std::string Problem::GetFileName(const std::string& _id) {

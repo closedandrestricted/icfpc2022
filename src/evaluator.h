@@ -20,5 +20,5 @@ class Evaluator : public solvers::Evaluator {
     int64_t DScore() const;
   };
 
-  static Result Apply(const Problem& p, const Solution& s);
+  static Result Apply(const Problem &p, const Solution &s);
 };

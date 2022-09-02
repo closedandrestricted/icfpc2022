@@ -3,11 +3,15 @@
 #include "cost.h"
 #include "move.h"
 
-void Canvas::Init(unsigned /*dx*/, unsigned /*dy*/) {
-  // ...
+void Canvas::Init(unsigned dx, unsigned dy) {
+  image.Init(dx, dy);
+  blocks.clear();
+  blocks["0"] = {0, dx, 0, dy, "0"};
+  index = 0;
+  isl_cost = 0;
 }
 
-void Canvas::Apply(const Move& move) {
+void Canvas::Apply(const Move &move) {
   isl_cost += Cost(*this, move);
   switch (move.type) {
     case Move::SKIP: {
@@ -38,7 +42,7 @@ void Canvas::Apply(const Move& move) {
       break;
     }
     case Move::COLOR: {
-      const auto& b = Get(move.block_id1);
+      const auto &b = Get(move.block_id1);
       for (unsigned x = b.x0; x < b.x1; ++x) {
         for (unsigned y = b.x0; y < b.y1; ++y) {
           image(x, y) = move.color;
@@ -47,8 +51,8 @@ void Canvas::Apply(const Move& move) {
       break;
     }
     case Move::SWAP: {
-      const auto& b1 = Get(move.block_id1);
-      const auto& b2 = Get(move.block_id2);
+      const auto &b1 = Get(move.block_id1);
+      const auto &b2 = Get(move.block_id2);
       assert((b1.x1 - b1.x0 == b2.x1 - b2.x0) &&
              (b1.y1 - b1.y0 == b2.y1 - b2.y0));
       for (unsigned x = 0; x < b1.x1 - b1.x0; ++x) {

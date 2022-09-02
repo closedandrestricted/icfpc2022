@@ -19,9 +19,9 @@ std::string Move::Encode() const {
       ss << "cut [" << block_id1 << "] [" << x << ", " << y << "]";
       break;
     case COLOR:
-      ss << "color [" << block_id1 << "] [" << color.rgba[0] << ", "
-         << color.rgba[1] << ", " << color.rgba[2] << ", " << color.rgba[3]
-         << "]";
+      ss << "color [" << block_id1 << "] [" << unsigned(color.rgba[0]) << ", "
+         << unsigned(color.rgba[1]) << ", " << unsigned(color.rgba[2]) << ", "
+         << unsigned(color.rgba[3]) << "]";
       break;
     case SWAP:
       ss << "swap [" << block_id1 << "] [" << block_id2 << "]";

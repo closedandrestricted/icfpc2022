@@ -3,7 +3,7 @@
 #include <string>
 
 std::string ProblemFilename(const std::string& problem_id) {
-  return path_to_root + "problems/" + problem_id + ".json";
+  return path_to_root + "problems/" + problem_id + ".png";
 }
 
 std::string ProblemFilename(unsigned problem_id) {
@@ -12,7 +12,7 @@ std::string ProblemFilename(unsigned problem_id) {
 
 std::string SolutionFilename(const std::string& problem_id,
                              const std::string& solver_name) {
-  return path_to_root + "solutions/" + solver_name + "/" + problem_id + ".json";
+  return path_to_root + "solutions/" + solver_name + "/" + problem_id + ".txt";
 }
 
 std::string SolutionFilename(unsigned problem_id,
