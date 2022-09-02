@@ -30,20 +30,32 @@ inline void RunOne(TSolver& solver, const std::string& problem_id) {
   if (!r.correct) return;
   if (new_solution && !solver.SkipSolutionWrite()) {
     TSolution scache;
-    scache.Load(problem_id, solver_name);
-    auto rcache = TEvaluator::Apply(p, scache);
-    if (TEvaluator::Compare(r, rcache)) {
-      std::cout << "New solution for problem: " << problem_id << std::endl;
-      s.Save(solver_name);
+    bool ok = scache.Load(problem_id, solver_name);
+    if (ok) {
+      auto rcache = TEvaluator::Apply(p, scache);
+      if (TEvaluator::Compare(r, rcache)) {
+        std::cout << "New solution for problem: " << problem_id << "\t["
+                  << rcache.DScore() << " -> " << r.DScore() << "]"
+                  << std::endl;
+        s.Save(solver_name);
+      }
+    } else {
+      std::cout << "Solution in " << solver_name << " is unreadable!"
+                << std::endl;
     }
   }
   if (!solver.SkipBest()) {
     TSolution sbest;
-    sbest.Load(problem_id, "best");
-    auto rbest = TEvaluator::Apply(p, sbest);
-    if (TEvaluator::Compare(r, rbest)) {
-      std::cout << "New best solution for problem: " << problem_id << std::endl;
-      s.Save("best");
+    bool ok = sbest.Load(problem_id, "best");
+    if (ok) {
+      auto rbest = TEvaluator::Apply(p, sbest);
+      if (TEvaluator::Compare(r, rbest)) {
+        std::cout << "New best solution for problem: " << problem_id << "\t["
+                  << rbest.DScore() << " -> " << r.DScore() << "]" << std::endl;
+        s.Save("best");
+      }
+    } else {
+      std::cout << "Solution in best is unreadable!" << std::endl;
     }
   }
 }
