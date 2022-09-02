@@ -1,6 +1,6 @@
 #include "settings.h"
 #include "solvers/one_color.h"
-// #include "utils/evaluate_solution.h"
+#include "utils/evaluate_solution.h"
 
 #include "common/files/command_line.h"
 #include "common/solvers/ext/run_n.h"
@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
   auto mode = cmd.GetString("mode");
   if (mode == "eval") {
-    // EvaluateSolution(cmd.GetString("solution"));
+    EvaluateSolution(cmd.GetString("solution"));
   } else if (mode == "run") {
     src_solvers::Base::PSolver s;
     auto solver_name = cmd.GetString("solver");
@@ -49,22 +49,3 @@ int main(int argc, char** argv) {
 
   return 0;
 }
-
-// #include "evaluator.h"
-// #include "pixel.h"
-// #include "problem.h"
-// #include "solution.h"
-
-// #include <iostream>
-
-// int main() {
-//   std::cout << "Test" << std::endl;
-//   Problem p;
-//   p.Load("1");
-//   Pixel pxl{255, 255, 255, 255};
-//   Solution s("1", std::vector<Move>{Move(Move::COLOR, "0", pxl)});
-//   auto r = Evaluator::Apply(p, s);
-//   std::cout << r.correct << "\t" << r.score << std::endl;
-//   s.Save("test");
-//   return 0;
-// }

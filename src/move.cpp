@@ -1,7 +1,9 @@
 #include "move.h"
 
 #include "common/base.h"
+#include "common/string/utils/split.h"
 
+#include <iostream>
 #include <ostream>
 #include <sstream>
 
@@ -36,4 +38,27 @@ std::string Move::Encode() const {
   return ss.str();
 }
 
-bool Move::Decode(const std::string&) { return false; }
+bool Move::Decode(const std::string& s) {
+  auto vs = Split(s, " ,[]");
+  if (vs.empty()) {
+    type = SKIP;
+    return true;
+  }
+  assert(vs.size() >= 3);
+  if (vs[0] == "cut") {
+    // ...
+    return false;
+  } else if (vs[0] == "color") {
+    assert(vs.size() == 6);
+    type = COLOR;
+    block_id1 = vs[1];
+    for (unsigned i = 0; i < 4; ++i) {
+      color.rgba[i] = stoi(vs[i + 2]);
+    }
+    return true;
+  } else {
+    // ...
+    return false;
+  }
+  return true;
+}
