@@ -8,12 +8,12 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/debug/build/icfppc_2021",
+            "program": "${workspaceFolder}/debug/build/icfpc",
             "args": [
                 "-mode",
                 "run",
                 "-solver",
-                "mctp_score2",
+                "one_color",
                 "-nthreads",
                 "0"
             ],

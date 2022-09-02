@@ -36,7 +36,4 @@ std::string Move::Encode() const {
   return ss.str();
 }
 
-bool Move::Decode(const std::string& /*s*/) {
-  // ...
-  return false;
-}
+bool Move::Decode(const std::string&) { return false; }
