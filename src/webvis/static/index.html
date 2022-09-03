@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>
+        Closed and Restricted Boltzmann Machine - MeatBag Solver
+    </title>
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="text/javascript" src="./static/editor.js"></script>
+    <style>
+        div {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main_div">
+        <form>
+            Problem:
+            <input type="text" id="problem_id" />
+            <input type="submit" id="submit" />
+        </form>
+        <form>
+            Solution (folder):
+            <input type="text" id="solution_folder" />
+            <input type="submit" id="solution_load" value="Load Solution" />
+        </form>
+    </div>
+    <table align="center">
+        <tr>
+            <td>
+                <img id="png-problem" style="border: 3px solid #000">
+                </img>
+            </td>
+            <td id="svg-td">
+            </td>
+        </tr>
+    </table>
+</body>
+
+
+</html>
