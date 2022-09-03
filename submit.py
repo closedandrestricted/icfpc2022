@@ -10,10 +10,11 @@ def main():
     print(auth)
     for i in range(1, NPROBLEMS):
         filename = "solutions/best/%d.txt" % i
-        if os.path.exists(filename):
-            with open(filename, "rb") as f:
-                resp = requests.post("https://robovinci.xyz/api/problems/%d" % i, files=[('file', f)], headers={"Authorization": "Bearer %s" % auth})
-                print(resp.text)
+        if not os.path.exists(filename):
+            filename = "solutions/best/empty.txt"
+        with open(filename, "rb") as f:
+            resp = requests.post("https://robovinci.xyz/api/problems/%d" % i, files=[('file', f)], headers={"Authorization": "Bearer %s" % auth})
+            print(resp.text)
 
 
 if __name__ == "__main__":
