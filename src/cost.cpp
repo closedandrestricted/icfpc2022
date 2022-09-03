@@ -43,3 +43,11 @@ double Similarity(const Image &i1, const Image &i2) {
     s += Distance(i1.pixels[i], i2.pixels[i]);
   return round(s / 200.0);
 }
+
+double Similarity(const Image &i1, const Image &i2, const Block &b) {
+  double s = 0;
+  for (unsigned x = b.x0; x < b.x1; ++x) {
+    for (unsigned y = b.y0; y < b.y1; ++y) s += Distance(i1(x, y), i2(x, y));
+  }
+  return s / 200.0;
+}
