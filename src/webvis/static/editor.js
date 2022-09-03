@@ -174,6 +174,16 @@ function draw_regions(blocks) {
 
     let [w, h] = get_w_h()
 
+    const xScale = d3.scaleLinear()
+        .domain([0, w])
+        .range([0, 2 * w - 1]);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, h])
+        .range([2 * h - 1, 0]);
+
+    var blockarr = [].concat(blocks);
+
     d3.select("#svg-td").select("svg").remove()
     d3.select("#svg-td")
         .append("svg")
@@ -181,11 +191,27 @@ function draw_regions(blocks) {
         .attr("width", 2 * w - 1)
         .attr("height", 2 * h - 1)
         .attr("style", "border: 1px solid #000")
+        .on("mousedown", (ev) => {
+            let [x, y] = [ev.offsetX, ev.offsetY]
+            x /= 2
+            y = (2 * h - 1 - y) / 2
+            let clicked = []
+            blockarr.forEach((b0) => {
+                if (b0.x <= x && x <= b0.x + b0.w && b0.y <= y && y <= b0.y + b0.h) {
+                    clicked.push(b0)
+                }
+            })
+            if (clicked) {
+                insertTextCommand("[" + clicked[0].id + "]");
+            }
+            console.log(clicked);
+        })
 
     var crs = [];
     var crss = [];
     for (const [key, block] of Object.entries(blocks)) {
         if (key != "last_id") {
+            blockarr.push(block);
             crs.push(colorRegion(block.x, block.w, block.y, block.h, 0, 0, 0, 255));
             crss.push(translate(block.crs, block.x, block.y));
         }
@@ -199,7 +225,7 @@ function draw_regions(blocks) {
         .enter()
         .append("rect")
         .attr("x", d => 2 * d.x)
-        .attr("y", d => 2 * (h - d.y - d.h) - 1)
+        .attr("y", d => 2 * (h - d.y - d.h))
         .attr("width", d => 2 * d.w - 1)
         .attr("height", d => 2 * d.h - 1)
         .attr("fill", d => "rgba(" + d.r + "," + d.g + "," + d.b + "," + d.a + ")")
@@ -211,7 +237,8 @@ function get_w_h() {
     return [w, h];
 }
 
-function apply_solution(lines) {
+function apply_solution(text) {
+    lines = text.split("\n")
 
     let [w, h] = get_w_h();
 
@@ -266,6 +293,14 @@ function apply_solution(lines) {
     draw_regions(blocks);
 }
 
+var canvas = document.createElement('canvas');
+
+
+function insertTextCommand(text) {
+    let node = d3.select("#commands").node();
+    b = node.selectionEnd
+    node.value = node.value.substring(0, b) + text + node.value.substring(b)
+}
 
 function set_problem() {
     var id = d3.select("#problem_id").node().value;
@@ -283,23 +318,41 @@ function set_problem() {
             .attr("style", "border: 3px solid #000")
         var sol_folder = d3.select("#solution_folder").node().value || "best";
 
+        var img = document.getElementById('png-problem');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+
         d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
-            var lines = text.split("\n")
-            var idxes = lines.map((d, i) => i);
-            console.log(lines.length)
-            d3.select("#commands").selectAll("li").remove()
+            d3.select("#commands").text(text)
             d3.select("#commands")
-                .selectAll("li")
-                .data(idxes)
-                .enter()
-                .append("li")
-                .text(i => lines[i])
-                .on("mouseover", (_, i) => {
-                    apply_solution(lines.slice(0, i))
+                .on("mouseout", () => {
+                    apply_solution(d3.select("#commands").node().value)
                 })
-            d3.select("#commands")
-                .on("mouseout", () => apply_solution(lines));
-            apply_solution(lines)
+                .on("select", (e) => {
+                    let node = d3.select("#commands").node();
+                    b = node.selectionEnd
+                    apply_solution()
+                })
+            d3.select("#png-problem")
+                .on("mousedown", (ev) => {
+                    var rgba = canvas.getContext('2d').getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
+                    insertTextCommand("[" + rgba + "]");
+                })
+
+
+            // d3.select("#commands")
+            //     .selectAll("li")
+            //     .data(idxes)
+            //     .enter()
+            //     .append("li")
+            //     .text(i => lines[i])
+            //     .on("mouseover", (_, i) => {
+            //         apply_solution(lines.slice(0, i))
+            //     })
+            // d3.select("#commands")
+            //     
+            apply_solution(text)
         });
     })
 }
