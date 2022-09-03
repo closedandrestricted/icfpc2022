@@ -22,12 +22,22 @@ def main():
             filedigest = hashlib.md5(open(filename, "rb").read()).hexdigest()
             resp = requests.post("https://robovinci.xyz/api/problems/%d" % i, files=[('file', f)], headers={"Authorization": "Bearer %s" % auth})
             print(resp.text)
-            taskStatus = resp.json()
-            key = "task%d" % i
-            if key not in status:
-                status[key] = {}
-            status[key]["submission_id"] = taskStatus["submission_id"]
-            status[key]["submission_digest"] = filedigest
+            if resp.text != "Limit exceeded":
+                taskStatus = resp.json()
+                key = "task%d" % i
+                if key not in status:
+                    status[key] = {}
+                status[key]["submission_id"] = taskStatus["submission_id"]
+                status[key]["submission_digest"] = filedigest
+                status[key]["submission_status"] = {}
+
+    for i in range(1, NPROBLEMS):
+        key = "task%d" % i
+        if key in status and len(status[key]["submission_status"]) == 0:
+            resp = requests.get("https://robovinci.xyz/api/submissions/%d" % status[key]["submission_id"], headers={"Authorization": "Bearer %s" % auth})
+            print(resp.text)
+            if resp.text != "Limit exceeded":
+                status[key]["submission_status"] = resp.json()
 
     with open(STATUS_FILENAME, "w") as f:
         f.write(json.dumps(status, indent=4))
