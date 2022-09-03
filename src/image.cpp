@@ -15,6 +15,14 @@ void Image::Init(unsigned _dx, unsigned _dy) {
   pixels.resize(dx * dy, color);
 }
 
+void Image::Color(const Block& b, const Pixel& color) {
+  for (unsigned x = b.x0; x < b.x1; ++x) {
+    for (unsigned y = b.y0; y < b.y1; ++y) {
+      (*this)(x, y) = color;
+    }
+  }
+}
+
 bool Image::Load(const std::string& filename) {
   FILE* png;
   png = fopen(filename.c_str(), "rb");
