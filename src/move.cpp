@@ -48,11 +48,11 @@ bool Move::Decode(const std::string& s) {
   if (vs[0] == "cut") {
     assert(vs.size() == 4);
     block_id1 = vs[1];
-    if (vs[2] == "x") {
+    if ((vs[2] == "x") || (vs[2] == "X")) {
       type = LINE_CUT;
       x = stoi(vs[3]);
       y = 0;
-    } else if (vs[2] == "y") {
+    } else if ((vs[2] == "y") || (vs[2] == "Y")) {
       type = LINE_CUT;
       x = 0;
       y = stoi(vs[3]);
