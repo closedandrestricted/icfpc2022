@@ -29,11 +29,17 @@
     </div>
     <table align="center">
         <tr>
-            <td>
-                <img id="png-problem" style="border: 3px solid #000">
-                </img>
+            <td id="prb-td">
+                <div>Select text to execute until selection:</div>
+                <div style="overflow:scroll; height:200px;">
+                    <textarea id="commands" cols=70 rows=20 style="font-family: monospace">
+                    </textarea>
+                </div>
+                <br>
+                <div>Click on pixel to insert its COLOR in command sequence:</div>
             </td>
             <td id="svg-td">
+                <div>Click on pixel to insert its BLOCK in command sequence:</div>
             </td>
         </tr>
     </table>
