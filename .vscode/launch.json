@@ -13,7 +13,7 @@
                 "-mode",
                 "run",
                 "-solver",
-                "one_color",
+                "greedy_split",
                 "-nthreads",
                 "0"
             ],

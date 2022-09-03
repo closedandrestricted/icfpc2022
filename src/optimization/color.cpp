@@ -10,7 +10,7 @@ using namespace opt;
 double Color::Cost(const std::vector<Pixel>& points, const Pixel& color) {
   double s = 0;
   for (auto& p : points) s += Distance(p, color);
-  return s;
+  return s / 200;
 }
 
 std::vector<Pixel> Color::Points(const Block& block, const Image& image) {
@@ -51,11 +51,10 @@ Pixel Color::Median(const std::vector<Pixel>& points) {
 
 // TODO:
 //   Make it faster
-Pixel Color::MinCost(const std::vector<Pixel>& points) {
-  auto c1 = MSE(points), c2 = Median(points);
-  double s1 = Cost(points, c1), s2 = Cost(points, c2);
-  auto cc = ((s1 < s2) ? c1 : c2);
-  double sbest = std::min(s1, s2);
+Pixel Color::MinCost(const std::vector<Pixel>& points,
+                     const Pixel& initial_point) {
+  auto cc = initial_point;
+  double sbest = Cost(points, cc);
   unsigned lit = 0;
   for (unsigned it = 0; it < lit + 4; ++it) {
     unsigned d = it % 4;
@@ -85,4 +84,10 @@ Pixel Color::MinCost(const std::vector<Pixel>& points) {
     }
   }
   return cc;
+}
+
+Pixel Color::MinCost(const std::vector<Pixel>& points) {
+  auto c1 = MSE(points), c2 = Median(points);
+  double s1 = Cost(points, c1), s2 = Cost(points, c2);
+  return MinCost(points, ((s1 < s2) ? c1 : c2));
 }

@@ -86,7 +86,7 @@ bool Image::Load(const std::string& filename) {
   for (unsigned y = 0; y < dy; ++y) {
     for (unsigned x = 0; x < dx; ++x) {
       for (unsigned i = 0; i < 4; ++i) {
-        pixels[x * dy + y].rgba[i] = *p++;
+        pixels[x * dy + (dy - y - 1)].rgba[i] = *p++;
       }
     }
   }

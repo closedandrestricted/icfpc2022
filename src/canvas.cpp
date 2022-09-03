@@ -44,7 +44,7 @@ void Canvas::Apply(const Move &move) {
     case Move::COLOR: {
       const auto &b = Get(move.block_id1);
       for (unsigned x = b.x0; x < b.x1; ++x) {
-        for (unsigned y = b.x0; y < b.y1; ++y) {
+        for (unsigned y = b.y0; y < b.y1; ++y) {
           image(x, y) = move.color;
         }
       }

@@ -14,6 +14,7 @@ class Color {
 
   static Pixel MSE(const std::vector<Pixel>& points);
   static Pixel Median(const std::vector<Pixel>& points);
+  static Pixel MinCost(const std::vector<Pixel>& points, const Pixel& initial);
   static Pixel MinCost(const std::vector<Pixel>& points);
 };
 }  // namespace opt

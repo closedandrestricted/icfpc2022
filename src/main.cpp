@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "solvers/greedy_split.h"
 #include "solvers/one_color.h"
 #include "utils/evaluate_solution.h"
 
@@ -31,6 +32,8 @@ int main(int argc, char** argv) {
     auto timelimit = cmd.GetInt("timelimit");
     if (solver_name == "one_color") {
       s = std::make_shared<src_solvers::OneColor>(timelimit);
+    } else if (solver_name == "greedy_split") {
+      s = std::make_shared<src_solvers::GreedySplit>(timelimit);
     } else {
       std::cerr << "Unknown solver type: " << solver_name << std::endl;
       return -1;

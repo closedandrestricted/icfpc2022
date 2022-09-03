@@ -15,6 +15,8 @@ class Move {
 
   Move() : type(END) {}
   Move(Type _type) : type(_type) {}
+  Move(Type _type, const std::string& id, unsigned _x, unsigned _y)
+      : type(_type), block_id1(id), x(_x), y(_y) {}
   Move(Type _type, const std::string& id, const Pixel& _color)
       : type(_type), block_id1(id), color(_color) {}
 
