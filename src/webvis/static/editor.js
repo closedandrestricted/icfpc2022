@@ -255,6 +255,7 @@ function try_apply_solution(initial, text) {
         apply_solution(initial, text)
     } catch (e) {
         d3.select("#penalty_total").text("ERROR!!")
+        console.log(e)
         throw (e)
     }
 }
@@ -272,7 +273,8 @@ function blocks_init(initial, blocks) {
             jsonblock.blockId, x, w, y, h,
             [colorRegion(0, w, 0, h, r, g, b, a)])
     })
-    blocks.last_id = "" + initial.blocks.length
+    blocks.last_id = initial.blocks.length - 1
+    console.log(blocks)
 }
 
 function apply_solution(initial, text) {
