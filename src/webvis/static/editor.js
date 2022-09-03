@@ -332,7 +332,7 @@ function set_problem() {
                 .on("select", (e) => {
                     let node = d3.select("#commands").node();
                     b = node.selectionEnd
-                    apply_solution()
+                    apply_solution(node.value.substring(0, b))
                 })
             d3.select("#png-problem")
                 .on("mousedown", (ev) => {
