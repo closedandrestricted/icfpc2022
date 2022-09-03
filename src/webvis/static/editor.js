@@ -270,7 +270,7 @@ function blocks_init(initial, blocks) {
         let [r, g, b, a] = jsonblock.color
         blocks[jsonblock.blockId] = newblock(
             jsonblock.blockId, x, w, y, h,
-            [colorRegion(x, w, y, h, r, g, b, a)])
+            [colorRegion(0, w, 0, h, r, g, b, a)])
     })
 }
 
