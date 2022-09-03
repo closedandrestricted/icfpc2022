@@ -2,6 +2,7 @@
 
 #include "common/base.h"
 
+#include <algorithm>
 #include <cmath>
 
 double BaseCost(Move::Type type) {
@@ -28,7 +29,8 @@ double Cost(const Canvas &canvas, const Move &move) {
   auto &b = canvas.Get(move.block_id1);
   if (move.type == Move::MERGE) {
     auto &b2 = canvas.Get(move.block_id2);
-    return round(BaseCost(move.type) * canvas.Size() / (b.Size() + b2.Size()));
+    return round(BaseCost(move.type) * canvas.Size() /
+                 (std::max(b.Size(), b2.Size())));
   } else {
     return round(BaseCost(move.type) * canvas.Size() / b.Size());
   }
@@ -39,5 +41,5 @@ double Similarity(const Image &i1, const Image &i2) {
   double s = 0;
   for (unsigned i = 0; i < i1.dx * i1.dy; ++i)
     s += Distance(i1.pixels[i], i2.pixels[i]);
-  return s / 200.0;
+  return round(s / 200.0);
 }
