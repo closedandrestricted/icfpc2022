@@ -21,7 +21,9 @@ class GreedySplit2 : public Base {
 
   bool SkipSolutionRead() const override { return true; }
 
-  std::string Name() const override { return "greedy_split2"; }
+  // std::string Name() const override { return "greedy_split2"; }
+
+  std::vector<Move> SolveI(const Image& target, const Canvas& canvas);
 
   Solution Solve(const Problem& p) override;
 };
