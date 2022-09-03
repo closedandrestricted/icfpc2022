@@ -169,6 +169,22 @@ function apply_merge(blocks, id1, id2) {
     blocks.last_id = blocks.last_id + 1
 }
 
+function draw_crs(crs) {
+    let [w, h] = get_w_h()
+
+    d3.select("#svg").html("")
+    d3.select("#svg")
+        .selectAll(".rect")
+        .data(crs)
+        .enter()
+        .append("rect")
+        .attr("x", d => 2 * d.x)
+        .attr("y", d => 2 * (h - d.y - d.h))
+        .attr("width", d => 2 * d.w - 1)
+        .attr("height", d => 2 * d.h - 1)
+        .attr("fill", d => "rgba(" + d.r + "," + d.g + "," + d.b + "," + d.a + ")")
+}
+
 
 function draw_regions(blocks) {
 
@@ -192,6 +208,16 @@ function draw_regions(blocks) {
         .attr("height", 2 * h - 1)
         .attr("style", "border: 1px solid #000")
         .on("mousedown", (ev) => {
+            if (ev.altKey) {
+                d3.select("#svg")
+                    .html("")
+                    .append("image")
+                    .attr("xlink:href", "/problem?id=" + globProblemId)
+                    .attr("style", "image-rendering: pixelated")
+                    .attr("width", 2 * w - 1)
+                    .attr("height", 2 * h - 1);
+                return
+            }
             let [x, y] = [ev.offsetX, ev.offsetY]
             x /= 2
             y = (2 * h - 1 - y) / 2
@@ -204,7 +230,12 @@ function draw_regions(blocks) {
             if (clicked) {
                 insertTextCommand("[" + clicked[0].id + "]");
             }
-            console.log(clicked);
+            var errcrs = []
+            crss.forEach(crs => crs.forEach(cr => {
+            }))
+        })
+        .on("mouseup", (ev) => {
+            draw_crs(crs);
         })
 
     var crs = [];
@@ -219,16 +250,7 @@ function draw_regions(blocks) {
 
     crs = crs.concat(...crss);
 
-    d3.select("#svg")
-        .selectAll(".rect")
-        .data(crs)
-        .enter()
-        .append("rect")
-        .attr("x", d => 2 * d.x)
-        .attr("y", d => 2 * (h - d.y - d.h))
-        .attr("width", d => 2 * d.w - 1)
-        .attr("height", d => 2 * d.h - 1)
-        .attr("fill", d => "rgba(" + d.r + "," + d.g + "," + d.b + "," + d.a + ")")
+    draw_crs(crs);
 
     let penalty_diff = diffPenalty(crss)
     d3.select("#penalty_diff").text(penalty_diff)
@@ -467,10 +489,12 @@ function set_solution() {
     })
 }
 
-function set_problem() {
-    var id = d3.select("#problem_id").node().value;
+var globProblemId = undefined
 
-    d3.image("/problem?id=" + id).then(img => {
+function set_problem() {
+    globProblemId = d3.select("#problem_id").node().value;
+
+    d3.image("/problem?id=" + globProblemId).then(img => {
         d3.select("#prb-td")
             .selectAll("img")
             .remove()
