@@ -1,5 +1,7 @@
 #include "settings.h"
 #include "solvers/greedy_split.h"
+#include "solvers/greedy_split2.h"
+#include "solvers/inverted_greedy.h"
 #include "solvers/one_color.h"
 #include "utils/evaluate_solution.h"
 
@@ -34,6 +36,10 @@ int main(int argc, char** argv) {
       s = std::make_shared<src_solvers::OneColor>(timelimit);
     } else if (solver_name == "greedy_split") {
       s = std::make_shared<src_solvers::GreedySplit>(timelimit);
+    } else if (solver_name == "greedy_split2") {
+      s = std::make_shared<src_solvers::GreedySplit2>(timelimit);
+      // } else if (solver_name == "inv_greedy") {
+      //   s = std::make_shared<src_solvers::InvertedGreedy>(timelimit);
     } else {
       std::cerr << "Unknown solver type: " << solver_name << std::endl;
       return -1;

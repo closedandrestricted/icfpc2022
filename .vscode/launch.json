@@ -13,7 +13,7 @@
                 "-mode",
                 "run",
                 "-solver",
-                "greedy_split",
+                "inv_greedy",
                 "-nthreads",
                 "0"
             ],
