@@ -15,16 +15,18 @@ def main():
     auth = open("apiKey2", "rb").read().decode('utf-8').strip()
     print(auth)
     for i in range(1, NPROBLEMS):
+        key = "task%d" % i
         filename = "solutions/best/%d.txt" % i
         if not os.path.exists(filename):
             filename = "solutions/best/empty.txt"
         with open(filename, "rb") as f:
             filedigest = hashlib.md5(open(filename, "rb").read()).hexdigest()
+            if filedigest == status[key].get("submission_digest", 0):
+                continue
             resp = requests.post("https://robovinci.xyz/api/problems/%d" % i, files=[('file', f)], headers={"Authorization": "Bearer %s" % auth})
             print(resp.text)
             if resp.text != "Limit exceeded":
                 taskStatus = resp.json()
-                key = "task%d" % i
                 if key not in status:
                     status[key] = {}
                 status[key]["submission_id"] = taskStatus["submission_id"]
