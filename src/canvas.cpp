@@ -3,6 +3,8 @@
 #include "cost.h"
 #include "move.h"
 
+#include <algorithm>
+
 void Canvas::Init(unsigned dx, unsigned dy) {
   image.Init(dx, dy);
   blocks.clear();
@@ -51,8 +53,8 @@ void Canvas::Apply(const Move &move) {
       break;
     }
     case Move::SWAP: {
-      const auto &b1 = Get(move.block_id1);
-      const auto &b2 = Get(move.block_id2);
+      auto &b1 = Get(move.block_id1);
+      auto &b2 = Get(move.block_id2);
       assert((b1.x1 - b1.x0 == b2.x1 - b2.x0) &&
              (b1.y1 - b1.y0 == b2.y1 - b2.y0));
       for (unsigned x = 0; x < b1.x1 - b1.x0; ++x) {
@@ -61,6 +63,10 @@ void Canvas::Apply(const Move &move) {
               .rgba.swap(image(x + b2.x0, y + b2.y0).rgba);
         }
       }
+      std::swap(b1.x0, b2.x0);
+      std::swap(b1.x1, b2.x1);
+      std::swap(b1.y0, b2.y0);
+      std::swap(b1.y1, b2.y1);
       break;
     }
     case Move::MERGE: {
