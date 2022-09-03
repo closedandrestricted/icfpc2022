@@ -19,7 +19,7 @@ class GreedySplit : public Base {
     return std::make_shared<GreedySplit>(*this);
   }
 
-  bool SkipSolutionRead() const override { return true; }
+  // bool SkipSolutionRead() const override { return true; }
 
   std::string Name() const override { return "greedy_split"; }
 

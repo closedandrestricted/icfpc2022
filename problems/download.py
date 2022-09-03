@@ -2,7 +2,7 @@
 
 import requests
 
-for i in range(1, 21):
+for i in range(1, 26):
     url = "https://cdn.robovinci.xyz/imageframes/%d.png" % i
     filename = "%d.png" % i
     print("downloading: " + url)
