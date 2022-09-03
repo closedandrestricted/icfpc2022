@@ -75,7 +75,7 @@ bool Move::Decode(const std::string& s) {
     block_id2 = vs[2];
   } else if (vs[0] == "merge") {
     assert(vs.size() == 3);
-    type = SWAP;
+    type = MERGE;
     block_id1 = vs[1];
     block_id2 = vs[2];
   } else {

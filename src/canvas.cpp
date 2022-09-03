@@ -66,6 +66,7 @@ void Canvas::Apply(const Move &move) {
     case Move::MERGE: {
       auto id1 = move.block_id1, id2 = move.block_id2;
       auto b1 = blocks[id1], b2 = blocks[id2];
+      if ((b2.x0 < b1.x0) || (b2.y0 < b1.y0)) std::swap(b1, b2);
       if (b1.x1 == b2.x0) {
         assert((b1.y0 == b2.y0) && (b1.y1 == b2.y1));
       } else if (b1.y1 == b2.y0) {
