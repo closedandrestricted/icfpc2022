@@ -23,4 +23,10 @@ class Move {
 
   std::string Encode() const;
   bool Decode(const std::string& s);
+
+  bool operator==(const Move& m) const {
+    return (type == m.type) && (block_id1 == m.block_id1) &&
+           (block_id2 == m.block_id2) && (x == m.x) && (y == m.y) &&
+           (color == m.color);
+  }
 };

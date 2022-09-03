@@ -3,6 +3,7 @@
 #include "block.h"
 #include "image.h"
 
+#include "common/assert_exception.h"
 #include "common/base.h"
 
 #include <string.h>
@@ -30,7 +31,7 @@ class Canvas {
 
   const Block &Get(const std::string &id) const {
     auto it = blocks.find(id);
-    assert(it != blocks.end());
+    Assert(it != blocks.end());
     return it->second;
   }
 

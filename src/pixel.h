@@ -7,6 +7,8 @@
 class Pixel {
  public:
   std::array<uint8_t, 4> rgba;
+
+  bool operator==(const Pixel& p) const { return rgba == p.rgba; }
 };
 
 inline double Distance(const Pixel& p1, const Pixel& p2) {

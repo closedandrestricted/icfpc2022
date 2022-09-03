@@ -13,18 +13,18 @@
 
 using namespace src_solvers;
 
-Solution GreedySplit2::Solve(const Problem& p) {
+std::vector<Move> GreedySplit2::SolveI(const Image& i, const Canvas& canvas) {
   std::vector<Move> s;
-  auto& i = p.Target();
-  if (p.InitialCanvas().BSize() > 1) return Solution(p.Id(), s);
-  Block b0{0, i.dx, 0, i.dy, "0"};
   std::queue<std::pair<Block, Pixel>> q;
   std::vector<std::string> vid;
   std::unordered_map<std::string, Block> mblocks;
   std::unordered_map<std::string, Pixel> mcolors;
   std::unordered_map<std::string, std::pair<unsigned, unsigned>> msplit;
-  for (q.push({b0, opt::Color::MSE(opt::Color::Points(b0, i))}); !q.empty();
-       q.pop()) {
+  for (auto& it : canvas.blocks) {
+    auto b = it.second;
+    q.push({b, opt::Color::MSE(opt::Color::Points(b, i))});
+  }
+  for (; !q.empty(); q.pop()) {
     auto bq = q.front().first;
     auto cq = q.front().second;
     auto cost = opt::Color::Cost(opt::Color::Points(bq, i), cq);
@@ -125,7 +125,11 @@ Solution GreedySplit2::Solve(const Problem& p) {
           Move(Move::LINE_CUT, id, its->second.first, its->second.second));
     }
   }
+  return s;
+}
+
+Solution GreedySplit2::Solve(const Problem& p) {
+  std::vector<Move> s = SolveI(p.Target(), p.InitialCanvas());
   std::cout << "Done with " << p.Id() << std::endl;
-  // auto c = opt::Color::MinCost(opt::Color::Points(b, i));
   return Solution(p.Id(), s);
 }
