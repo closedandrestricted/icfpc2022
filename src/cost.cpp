@@ -26,6 +26,7 @@ double BaseCost(Move::Type type) {
 }
 
 double Cost(const Canvas &canvas, const Move &move) {
+  if (move.type == Move::SKIP) return 0.0;
   auto &b = canvas.Get(move.block_id1);
   if (move.type == Move::MERGE) {
     auto &b2 = canvas.Get(move.block_id2);
