@@ -3,7 +3,11 @@
 #include "cost.h"
 #include "move.h"
 
+#include "common/files/json.h"
+
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 
 void Canvas::Init(unsigned dx, unsigned dy) {
   image.Init(dx, dy);
@@ -45,11 +49,7 @@ void Canvas::Apply(const Move &move) {
     }
     case Move::COLOR: {
       const auto &b = Get(move.block_id1);
-      for (unsigned x = b.x0; x < b.x1; ++x) {
-        for (unsigned y = b.y0; y < b.y1; ++y) {
-          image(x, y) = move.color;
-        }
-      }
+      image.Color(b, move.color);
       break;
     }
     case Move::SWAP: {
@@ -90,4 +90,38 @@ void Canvas::Apply(const Move &move) {
       assert(false);
       break;
   }
+}
+
+namespace {
+bool TestFile(const std::string &filename) {
+  std::ifstream f(filename);
+  return f.good();
+}
+}  // namespace
+
+bool Canvas::Load(const std::string &filename) {
+  // std::cout << "Load canvas from file " << filename << std::endl;
+  if (!TestFile(filename)) return true;
+  files::JSON js;
+  if (!js.Load(filename)) return false;
+  // std::cout << "Json loaded" << std::endl;
+  isl_cost = 0;
+  image.Init(js.GetInteger("width"), js.GetInteger("height"));
+  auto &jsbs = js.GetValue("blocks");
+  index = jsbs.Size() - 1;
+  blocks.clear();
+  for (unsigned i = 0; i < jsbs.Size(); ++i) {
+    auto &jsbi = jsbs.GetValue(i);
+    auto &c0 = jsbi.GetValue("bottomLeft");
+    auto &c1 = jsbi.GetValue("topRight");
+    Block b{unsigned(c0.GetInteger(0)), unsigned(c1.GetInteger(0)),
+            unsigned(c0.GetInteger(1)), unsigned(c1.GetInteger(1)),
+            jsbi.GetString("blockId")};
+    blocks[b.id] = b;
+    auto &jc = jsbi.GetValue("color");
+    Pixel color;
+    for (unsigned j = 0; j < 4; ++j) color.rgba[j] = jc.GetInteger(j);
+    image.Color(b, color);
+  }
+  return true;
 }

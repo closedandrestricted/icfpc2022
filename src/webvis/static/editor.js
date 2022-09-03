@@ -250,26 +250,42 @@ function cost(baseCost, w, h, block) {
     return Math.round(baseCost * w * h / size(block))
 }
 
-function try_apply_solution(text) {
+function try_apply_solution(initial, text) {
     try {
-        apply_solution(text)
+        apply_solution(initial, text)
     } catch (e) {
         d3.select("#penalty_total").text("ERROR!!")
+        console.log(e)
         throw (e)
     }
 }
 
-function apply_solution(text) {
+function blocks_init(initial, blocks) {
+    initial.blocks.forEach(jsonblock => {
+        let [x, w, y, h] = [
+            jsonblock.bottomLeft[0],
+            jsonblock.topRight[0] - jsonblock.bottomLeft[0],
+            jsonblock.bottomLeft[1],
+            jsonblock.topRight[1] - jsonblock.bottomLeft[1]
+        ]
+        let [r, g, b, a] = jsonblock.color
+        blocks[jsonblock.blockId] = newblock(
+            jsonblock.blockId, x, w, y, h,
+            [colorRegion(0, w, 0, h, r, g, b, a)])
+    })
+    blocks.last_id = initial.blocks.length - 1
+    console.log(blocks)
+}
+
+function apply_solution(initial, text) {
     lines = text.split("\n")
 
     let [w, h] = get_w_h();
 
     var blocks = {
-        "last_id": 0,
         "penalty": 0,
-        "0": newblock("0", 0, w, 0, h, []),
     };
-    fill(blocks[0], 255, 255, 255, 255);
+    blocks_init(initial, blocks)
 
     lines.forEach(line => {
         line = line.replace(/\s/g, '');
@@ -387,60 +403,68 @@ function diffPenalty(crss) {
 function set_solution() {
     var id = d3.select("#problem_id").node().value;
     var sol_folder = d3.select("#solution_folder").node().value || "best";
-    d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
-        d3.select("#commands").text(text)
-        d3.select("#commands")
-            .on("select", (e) => {
-                let node = d3.select("#commands").node();
-                b = node.selectionEnd
-                try_apply_solution(node.value.substring(0, b))
+    d3.json("/initial?id=" + id).then(initial => {
+        d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
+            d3.select("#commands").text(text)
+            d3.select("#commands")
+                .on("select", (e) => {
+                    let node = d3.select("#commands").node();
+                    b = node.selectionEnd
+                    try_apply_solution(initial, node.value.substring(0, b))
+                })
+
+            d3.select('#solution_draw').on("click", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                try_apply_solution(initial, d3.select("#commands").node().value)
             })
-        d3.select("#png-problem")
-            .on("mousedown", (ev) => {
-                if (ev.altKey) {
-                    var [w, h] = get_w_h()
-                    const MAX = 10;
-                    let [bestx, besty, bestd] = [ev.offsetX, ev.offsetY, 0]
-                    for (let dx = -MAX; dx <= MAX; dx++) {
-                        for (let dy = -MAX; dy <= MAX; dy++) {
-                            var x = ev.offsetX + dx;
-                            var y = ev.offsetY + dy;
-                            if (x <= 0 || y <= 0 || x >= w || y >= h) {
-                                continue;
-                            }
-                            let px = [];
-                            px.push(canvas.getContext('2d').getImageData(x, y, 1, 1).data)
-                            px.push(canvas.getContext('2d').getImageData(x, y - 1, 1, 1).data)
-                            px.push(canvas.getContext('2d').getImageData(x - 1, y - 1, 1, 1).data)
-                            px.push(canvas.getContext('2d').getImageData(x - 1, y, 1, 1).data)
-                            let sumdist = 0
-                            for (let i = 0; i < 4; i++) {
-                                p1 = px[i]
-                                p2 = px[(i + 1) % 4]
-                                sumdist += Math.hypot(...p1.map((d, i) => d - p2[i]))
-                            }
-                            if (sumdist > bestd) {
-                                bestx = x
-                                besty = y
-                                bestd = sumdist
+            d3.select("#png-problem")
+                .on("mousedown", (ev) => {
+                    if (ev.altKey) {
+                        var [w, h] = get_w_h()
+                        const MAX = 10;
+                        let [bestx, besty, bestd] = [ev.offsetX, ev.offsetY, 0]
+                        for (let dx = -MAX; dx <= MAX; dx++) {
+                            for (let dy = -MAX; dy <= MAX; dy++) {
+                                var x = ev.offsetX + dx;
+                                var y = ev.offsetY + dy;
+                                if (x <= 0 || y <= 0 || x >= w || y >= h) {
+                                    continue;
+                                }
+                                let px = [];
+                                px.push(canvas.getContext('2d').getImageData(x, y, 1, 1).data)
+                                px.push(canvas.getContext('2d').getImageData(x, y - 1, 1, 1).data)
+                                px.push(canvas.getContext('2d').getImageData(x - 1, y - 1, 1, 1).data)
+                                px.push(canvas.getContext('2d').getImageData(x - 1, y, 1, 1).data)
+                                let sumdist = 0
+                                for (let i = 0; i < 4; i++) {
+                                    p1 = px[i]
+                                    p2 = px[(i + 1) % 4]
+                                    sumdist += Math.hypot(...p1.map((d, i) => d - p2[i]))
+                                }
+                                if (sumdist > bestd) {
+                                    bestx = x
+                                    besty = y
+                                    bestd = sumdist
+                                }
                             }
                         }
+                        insertTextCommand("[" + bestx + ", " + (h - besty - 1) + "]");
+                    } else {
+                        var rgba = canvas.getContext('2d').getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
+                        insertTextCommand("[" + rgba + "]");
                     }
-                    insertTextCommand("[" + bestx + ", " + (h - besty - 1) + "]");
-                } else {
-                    var rgba = canvas.getContext('2d').getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
-                    insertTextCommand("[" + rgba + "]");
-                }
-            })
-            .on("mousemove", (ev) => {
-                if (ev.altKey) {
-                    d3.select("#color-coord-sel").select("i").text("COORDS")
-                } else {
-                    d3.select("#color-coord-sel").select("i").text("COLOR")
-                }
-            })
-        try_apply_solution(text)
-    });
+                })
+                .on("mousemove", (ev) => {
+                    if (ev.altKey) {
+                        d3.select("#color-coord-sel").select("i").text("COORDS")
+                    } else {
+                        d3.select("#color-coord-sel").select("i").text("COLOR")
+                    }
+                })
+            try_apply_solution(initial, text)
+        });
+    })
 }
 
 function set_problem() {
@@ -460,7 +484,6 @@ function set_problem() {
 
         var img = document.getElementById('png-problem');
         setCanvas(img)
-
         set_solution()
     })
 }
@@ -478,12 +501,6 @@ function onload() {
         e.preventDefault();
         set_solution();
     })
-    d3.select('#solution_draw').on("click", function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        try_apply_solution(d3.select("#commands").node().value)
-    })
-
 }
 
 

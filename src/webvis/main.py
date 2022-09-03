@@ -24,12 +24,30 @@ class MainHandler(tornado.web.RequestHandler):
 class ProblemHandler(tornado.web.RequestHandler):
     def prepare(self):
         header = "Content-Type"
-        body = "application/json"
+        body = "image/png"
         self.set_header(header, body)
 
     def get(self):
         id = self.get_argument('id')
         path = os.path.join(this_dir, '../../problems/%s.png' % id)
+        print("Serving " + path)
+        with open(path, 'rb') as f:
+            data = f.read()
+            self.write(data)
+
+
+class InitialHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        header = "Content-Type"
+        body = "application/json"
+        self.set_header(header, body)
+
+    def get(self):
+        id = self.get_argument('id')
+        path = os.path.join(this_dir, '../../problems/%s.initial.json' % id)
+        if not os.path.exists(path):
+            path = os.path.join(
+                this_dir, '../../problems/default.initial.json')
         print("Serving " + path)
         with open(path, 'rb') as f:
             data = f.read()
@@ -46,10 +64,13 @@ class SolutionHandler(tornado.web.RequestHandler):
         id = self.get_argument('id')
         kind = self.get_argument('kind', 'best')
         path = os.path.join(this_dir, '../../solutions/%s/%s.txt' % (kind, id))
-        print("Serving " + path)
-        with open(path) as f:
-            data = f.read()
-            self.write(data)
+        if os.path.exists(path):
+            print("Serving " + path)
+            with open(path) as f:
+                data = f.read()
+                self.write(data)
+        else:
+            print("WARNING: no solution " + path)
 
 
 def make_app():
@@ -57,6 +78,7 @@ def make_app():
         (r"/", MainHandler),
         (r"/problem", ProblemHandler),
         (r"/solution", SolutionHandler),
+        (r"/initial", InitialHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler,
          {"path": os.path.join(this_dir, "static")}),
     ], debug=True)

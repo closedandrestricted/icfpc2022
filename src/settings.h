@@ -4,7 +4,7 @@
 
 namespace {
 const std::string path_to_root = "../";
-const unsigned last_problem = 25;
+const unsigned last_problem = 30;
 }  // namespace
 
 std::string ProblemFilename(const std::string& problem_id);

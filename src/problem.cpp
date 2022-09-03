@@ -4,7 +4,10 @@
 
 bool Problem::LoadI(const std::string& _id, const std::string& filename) {
   id = _id;
-  return target.Load(filename);
+  if (!target.Load(filename)) return false;
+  initial.Init(target.dx, target.dy);
+  auto filename2 = filename.substr(0, filename.size() - 3) + "initial.json";
+  return initial.Load(filename2);
 }
 
 std::string Problem::GetFileName(const std::string& _id) {

@@ -10,7 +10,7 @@ int64_t Evaluator::Result::DScore() const {
 }
 
 Evaluator::Result Evaluator::Apply(const Problem &p, const Solution &s) {
-  Canvas c(p.Target().dx, p.Target().dy);
+  Canvas c(p.InitialCanvas());
   for (const auto &m : s.Moves()) {
     c.Apply(m);
   }

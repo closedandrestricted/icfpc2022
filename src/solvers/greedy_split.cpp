@@ -16,6 +16,7 @@ using namespace src_solvers;
 Solution GreedySplit::Solve(const Problem& p) {
   std::vector<Move> s;
   auto& i = p.Target();
+  if (p.InitialCanvas().BSize() > 1) return Solution(p.Id(), s);
   Block b0{0, i.dx, 0, i.dy, "0"};
   std::queue<std::pair<Block, Pixel>> q;
   std::vector<std::string> vid;

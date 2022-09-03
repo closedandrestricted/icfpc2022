@@ -18,10 +18,12 @@ class Canvas {
   double isl_cost;
 
  public:
+  Canvas() { Init(1, 1); }
   Canvas(unsigned dx, unsigned dy) { Init(dx, dy); }
 
   void Init(unsigned dx, unsigned dy);
 
+  unsigned BSize() const { return blocks.size(); }
   double Size() const { return image.Size(); }
 
   Block &Get(const std::string &id) { return blocks[id]; }
@@ -33,4 +35,6 @@ class Canvas {
   }
 
   void Apply(const Move &move);
+
+  bool Load(const std::string &filename);
 };

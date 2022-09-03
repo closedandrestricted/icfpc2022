@@ -1,5 +1,6 @@
 #pragma once
 
+#include "block.h"
 #include "pixel.h"
 
 #include "common/base.h"
@@ -22,4 +23,6 @@ class Image {
 
   void Init(unsigned _dx, unsigned _dy);
   bool Load(const std::string &filename);
+
+  void Color(const Block &b, const Pixel &color);
 };
