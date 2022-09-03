@@ -1,8 +1,14 @@
 #pragma once
 
+#include "move.h"
+#include "problem.h"
+#include "solution.h"
+
+#include "common/base.h"
 #include "common/solvers/evaluator.h"
 
 #include <string>
+#include <vector>
 
 class Problem;
 class Solution;
@@ -25,5 +31,6 @@ class Evaluator : public solvers::Evaluator {
     int64_t DScore() const;
   };
 
+  static Result Apply(const Problem &p, const std::vector<Move> &moves);
   static Result Apply(const Problem &p, const Solution &s);
 };

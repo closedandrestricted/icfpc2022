@@ -1,5 +1,6 @@
 #include "cost.h"
 
+#include "common/assert_exception.h"
 #include "common/base.h"
 
 #include <algorithm>
@@ -30,9 +31,11 @@ double Cost(const Canvas &canvas, const Move &move) {
   auto &b = canvas.Get(move.block_id1);
   if (move.type == Move::MERGE) {
     auto &b2 = canvas.Get(move.block_id2);
-    return round(BaseCost(move.type) * canvas.Size() /
-                 (std::max(b.Size(), b2.Size())));
+    auto msize = std::max(b.Size(), b2.Size());
+    Assert(msize > 0);
+    return round(BaseCost(move.type) * canvas.Size() / msize);
   } else {
+    Assert(b.Size() > 0);
     return round(BaseCost(move.type) * canvas.Size() / b.Size());
   }
 }

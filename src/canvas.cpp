@@ -3,6 +3,7 @@
 #include "cost.h"
 #include "move.h"
 
+#include "common/assert_exception.h"
 #include "common/files/json.h"
 
 #include <algorithm>
@@ -24,13 +25,15 @@ void Canvas::Apply(const Move &move) {
       break;
     }
     case Move::LINE_CUT: {
-      assert((move.x == 0) != (move.y == 0));
+      Assert((move.x == 0) != (move.y == 0));
       auto id = move.block_id1;
       auto b = blocks[id];
       if (move.x) {
+        Assert((b.x0 < move.x) && (move.x < b.x1));
         blocks[id + ".0"] = Block({b.x0, move.x, b.y0, b.y1, id + ".0"});
         blocks[id + ".1"] = Block({move.x, b.x1, b.y0, b.y1, id + ".1"});
       } else {
+        Assert((b.y0 < move.y) && (move.y < b.y1));
         blocks[id + ".0"] = Block({b.x0, b.x1, b.y0, move.y, id + ".0"});
         blocks[id + ".1"] = Block({b.x0, b.x1, move.y, b.y1, id + ".1"});
       }
@@ -40,6 +43,8 @@ void Canvas::Apply(const Move &move) {
     case Move::POINT_CUT: {
       auto id = move.block_id1;
       auto b = blocks[id];
+      Assert((b.x0 < move.x) && (move.x < b.x1));
+      Assert((b.y0 < move.y) && (move.y < b.y1));
       blocks[id + ".0"] = Block({b.x0, move.x, b.y0, move.y, id + ".0"});
       blocks[id + ".1"] = Block({move.x, b.x1, b.y0, move.y, id + ".1"});
       blocks[id + ".3"] = Block({b.x0, move.x, move.y, b.y1, id + ".3"});
@@ -55,7 +60,7 @@ void Canvas::Apply(const Move &move) {
     case Move::SWAP: {
       auto &b1 = Get(move.block_id1);
       auto &b2 = Get(move.block_id2);
-      assert((b1.x1 - b1.x0 == b2.x1 - b2.x0) &&
+      Assert((b1.x1 - b1.x0 == b2.x1 - b2.x0) &&
              (b1.y1 - b1.y0 == b2.y1 - b2.y0));
       for (unsigned x = 0; x < b1.x1 - b1.x0; ++x) {
         for (unsigned y = 0; y < b1.y1 - b1.y0; ++y) {
@@ -74,11 +79,11 @@ void Canvas::Apply(const Move &move) {
       auto b1 = blocks[id1], b2 = blocks[id2];
       if ((b2.x0 < b1.x0) || (b2.y0 < b1.y0)) std::swap(b1, b2);
       if (b1.x1 == b2.x0) {
-        assert((b1.y0 == b2.y0) && (b1.y1 == b2.y1));
+        Assert((b1.y0 == b2.y0) && (b1.y1 == b2.y1));
       } else if (b1.y1 == b2.y0) {
-        assert((b1.x0 == b2.x0) && (b1.x1 == b2.x1));
+        Assert((b1.x0 == b2.x0) && (b1.x1 == b2.x1));
       } else {
-        assert(false);
+        Assert(false);
       }
       auto new_id = std::to_string(++index);
       blocks[new_id] = Block({b1.x0, b2.x1, b1.y0, b2.y1, new_id});

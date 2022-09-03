@@ -32,4 +32,7 @@ class Solution : public solvers::Solution {
 
   bool Load(const std::string& _id, const std::string& solver_name);
   void Save(const std::string& solver_name);
+
+  bool operator==(const Solution& s) const { return moves == s.moves; }
+  bool operator!=(const Solution& s) const { return !(moves == s.moves); }
 };

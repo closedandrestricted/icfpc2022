@@ -1,7 +1,9 @@
+#include "adjusters/simple.h"
 #include "settings.h"
 #include "solvers/greedy_split.h"
 #include "solvers/greedy_split2.h"
 #include "solvers/one_color.h"
+#include "utils/check_with_adjuster.h"
 #include "utils/evaluate_solution.h"
 
 #include "common/files/command_line.h"
@@ -49,6 +51,8 @@ int main(int argc, char** argv) {
       solvers::ext::RunNMT<src_solvers::Base>(*s, cmd.GetInt("first_problem"),
                                               cmd.GetInt("last_problem"),
                                               nthreads);
+  } else if (mode == "adjust") {
+    CheckWithAdjuster<adj::Simple>(cmd.GetString("solution"));
   } else {
     std::cerr << "Unknown mode " << mode << std::endl;
   }
