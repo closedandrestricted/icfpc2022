@@ -272,6 +272,7 @@ function blocks_init(initial, blocks) {
             jsonblock.blockId, x, w, y, h,
             [colorRegion(0, w, 0, h, r, g, b, a)])
     })
+    blocks.last_id = "" + initial.blocks.length
 }
 
 function apply_solution(initial, text) {
@@ -280,7 +281,6 @@ function apply_solution(initial, text) {
     let [w, h] = get_w_h();
 
     var blocks = {
-        "last_id": 0,
         "penalty": 0,
     };
     blocks_init(initial, blocks)
