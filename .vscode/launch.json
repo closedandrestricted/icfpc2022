@@ -15,8 +15,8 @@
                 // "-solver",
                 // "inv_greedy",
                 "eval",
-                "-solution"
-                "test",
+                "-solution",
+                "best",
                 "-nthreads",
                 "0"
             ],
