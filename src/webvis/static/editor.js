@@ -315,7 +315,7 @@ function set_problem() {
         d3.select("#prb-td")
             .select("img")
             .attr("id", "png-problem")
-            .attr("style", "border: 3px solid #000")
+            .attr("style", "image-rendering: crisp-edges")
         var sol_folder = d3.select("#solution_folder").node().value || "best";
 
         var img = document.getElementById('png-problem');
@@ -326,9 +326,6 @@ function set_problem() {
         d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
             d3.select("#commands").text(text)
             d3.select("#commands")
-                .on("mouseout", () => {
-                    apply_solution(d3.select("#commands").node().value)
-                })
                 .on("select", (e) => {
                     let node = d3.select("#commands").node();
                     b = node.selectionEnd
@@ -336,22 +333,48 @@ function set_problem() {
                 })
             d3.select("#png-problem")
                 .on("mousedown", (ev) => {
-                    var rgba = canvas.getContext('2d').getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
-                    insertTextCommand("[" + rgba + "]");
+                    if (ev.altKey) {
+                        var [w, h] = get_w_h()
+                        const MAX = 10;
+                        let [bestx, besty, bestd] = [ev.offsetX, ev.offsetY, 0]
+                        for (let dx = -MAX; dx <= MAX; dx++) {
+                            for (let dy = -MAX; dy <= MAX; dy++) {
+                                var x = ev.offsetX + dx;
+                                var y = ev.offsetY + dy;
+                                if (x <= 0 || y <= 0 || x >= w || y >= h) {
+                                    continue;
+                                }
+                                let px = [];
+                                px.push(canvas.getContext('2d').getImageData(x, y, 1, 1).data)
+                                px.push(canvas.getContext('2d').getImageData(x, y - 1, 1, 1).data)
+                                px.push(canvas.getContext('2d').getImageData(x - 1, y - 1, 1, 1).data)
+                                px.push(canvas.getContext('2d').getImageData(x - 1, y, 1, 1).data)
+                                let sumdist = 0
+                                for (let i = 0; i < 4; i++) {
+                                    p1 = px[i]
+                                    p2 = px[(i + 1) % 4]
+                                    sumdist += Math.hypot(...p1.map((d, i) => d - p2[i]))
+                                }
+                                if (sumdist > bestd) {
+                                    bestx = x
+                                    besty = y
+                                    bestd = sumdist
+                                }
+                            }
+                        }
+                        insertTextCommand("[" + bestx + ", " + (h - besty - 1) + "]");
+                    } else {
+                        var rgba = canvas.getContext('2d').getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
+                        insertTextCommand("[" + rgba + "]");
+                    }
                 })
-
-
-            // d3.select("#commands")
-            //     .selectAll("li")
-            //     .data(idxes)
-            //     .enter()
-            //     .append("li")
-            //     .text(i => lines[i])
-            //     .on("mouseover", (_, i) => {
-            //         apply_solution(lines.slice(0, i))
-            //     })
-            // d3.select("#commands")
-            //     
+                .on("mousemove", (ev) => {
+                    if (ev.altKey) {
+                        d3.select("#color-coord-sel").select("i").text("COORDS")
+                    } else {
+                        d3.select("#color-coord-sel").select("i").text("COLOR")
+                    }
+                })
             apply_solution(text)
         });
     })
@@ -370,6 +393,12 @@ function onload() {
         e.preventDefault();
         set_problem();
     })
+    d3.select('#solution_draw').on("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        apply_solution(d3.select("#commands").node().value)
+    })
+
 }
 
 
