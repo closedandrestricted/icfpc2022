@@ -71,8 +71,14 @@ function apply_cut4(blocks, id, x, y) {
     let block = blocks[id]
     x -= block.x
     y -= block.y
-    if (x <= 0 || x >= block.w) throw block
-    if (y <= 0 || y >= block.h) throw block
+    if (x <= 0 || x >= block.w) {
+        console.log(block)
+        throw x
+    }
+    if (y <= 0 || y >= block.h) {
+        console.log(block)
+        throw y
+    }
     let b0 = newblock(id + ".0", block.x, x, block.y, y, block.crs);
     let b1 = newblock(id + ".1", block.x + x, block.w - x, block.y, y, translate(block.crs, -x, 0));
     let b2 = newblock(id + ".2", block.x + x, block.w - x, block.y + y, block.h - y, translate(block.crs, -x, -y));
@@ -205,8 +211,7 @@ function get_w_h() {
     return [w, h];
 }
 
-function apply_solution(text) {
-    const lines = text.split('\n')
+function apply_solution(lines) {
 
     let [w, h] = get_w_h();
 
@@ -264,13 +269,39 @@ function apply_solution(text) {
 
 function set_problem() {
     var id = d3.select("#problem_id").node().value;
-    d3.select("#png-problem").attr("src", "/problem?id=" + id)
 
-    var sol_folder = d3.select("#solution_folder").node().value || "best";
+    d3.image("/problem?id=" + id).then(img => {
+        d3.select("#prb-td")
+            .selectAll("img")
+            .remove()
+        d3.select("#prb-td")
+            .node()
+            .appendChild(img)
+        d3.select("#prb-td")
+            .select("img")
+            .attr("id", "png-problem")
+            .attr("style", "border: 3px solid #000")
+        var sol_folder = d3.select("#solution_folder").node().value || "best";
 
-    d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
-        apply_solution(text)
-    });
+        d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
+            var lines = text.split("\n")
+            var idxes = lines.map((d, i) => i);
+            console.log(lines.length)
+            d3.select("#commands").selectAll("li").remove()
+            d3.select("#commands")
+                .selectAll("li")
+                .data(idxes)
+                .enter()
+                .append("li")
+                .text(i => lines[i])
+                .on("mouseover", (_, i) => {
+                    apply_solution(lines.slice(0, i))
+                })
+            d3.select("#commands")
+                .on("mouseout", () => apply_solution(lines));
+            apply_solution(lines)
+        });
+    })
 }
 
 function onload() {
