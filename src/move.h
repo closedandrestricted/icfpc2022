@@ -10,7 +10,8 @@ class Move {
 
   Type type;
   std::string block_id1, block_id2;
-  unsigned x, y;
+  unsigned x{};
+  unsigned y{};
   Pixel color;
 
   Move() : type(END) {}
