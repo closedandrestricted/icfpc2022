@@ -210,7 +210,7 @@ function draw_regions(blocks) {
     var crs = [];
     var crss = [];
     for (const [key, block] of Object.entries(blocks)) {
-        if (key != "last_id") {
+        if (key != "last_id" && key != "penalty") {
             blockarr.push(block);
             crs.push(colorRegion(block.x, block.w, block.y, block.h, 0, 0, 0, 255));
             crss.push(translate(block.crs, block.x, block.y));
@@ -229,12 +229,34 @@ function draw_regions(blocks) {
         .attr("width", d => 2 * d.w - 1)
         .attr("height", d => 2 * d.h - 1)
         .attr("fill", d => "rgba(" + d.r + "," + d.g + "," + d.b + "," + d.a + ")")
+
+    let penalty_diff = diffPenalty(crss)
+    d3.select("#penalty_diff").text(penalty_diff)
+    d3.select("#penalty_ops").text(blocks.penalty)
+    d3.select("#penalty_total").text(blocks.penalty + penalty_diff)
 }
 
 function get_w_h() {
     let w = d3.select("#png-problem").node().naturalWidth;
     let h = d3.select("#png-problem").node().naturalHeight;
     return [w, h];
+}
+
+function size(block) {
+    return block.w * block.h
+}
+
+function cost(baseCost, w, h, block) {
+    return Math.round(baseCost * w * h / size(block))
+}
+
+function try_apply_solution(text) {
+    try {
+        apply_solution(text)
+    } catch (e) {
+        d3.select("#penalty_total").text("ERROR!!")
+        throw (e)
+    }
 }
 
 function apply_solution(text) {
@@ -244,6 +266,7 @@ function apply_solution(text) {
 
     var blocks = {
         "last_id": 0,
+        "penalty": 0,
         "0": newblock("0", 0, w, 0, h, []),
     };
     fill(blocks[0], 255, 255, 255, 255);
@@ -255,12 +278,14 @@ function apply_solution(text) {
         match = line.match(/cut\[([\d.]+)\]\[(\d+),(\d+)\]/i)
         if (match) {
             let [_, id, x, y] = match;
+            blocks.penalty += cost(10, w, h, blocks[id])
             apply_cut4(blocks, id, +x, +y);
         }
 
         match = line.match(/cut\[([\d.]+)\]\[([XxYy])\]\[(\d+)\]/i)
         if (match) {
             let [_, id, orient, xORy] = match;
+            blocks.penalty += cost(7, w, h, blocks[id])
             if (orient == "X" || orient == "x") {
                 apply_cutX(blocks, id, +xORy);
             } else if (orient == "Y" || orient == "y") {
@@ -273,33 +298,90 @@ function apply_solution(text) {
         match = line.match(/color\[([\d.]+)\]\[(\d+),(\d+),(\d+),(\d+)\]/i)
         if (match) {
             let [_, id, r, g, b, a] = match;
+            blocks.penalty += cost(5, w, h, blocks[id])
             apply_color(blocks, id, +r, +g, +b, +a);
         }
 
         match = line.match(/swap\[([\d.]+)\]\[([\d.]+)\]/i)
         if (match) {
             let [_, id1, id2] = match;
+            if (size(blocks[id1] > size(blocks[id2]))) {
+                blocks.penalty += cost(3, w, h, blocks[id1])
+            } else {
+                blocks.penalty += cost(3, w, h, blocks[id2])
+            }
             apply_swap(blocks, id1, id2);
         }
 
         match = line.match(/merge\[([\d.]+)\]\[([\d.]+)\]/i)
         if (match) {
             let [_, id1, id2] = match;
+            if (size(blocks[id1] > size(blocks[id2]))) {
+                blocks.penalty += cost(1, w, h, blocks[id1])
+            } else {
+                blocks.penalty += cost(1, w, h, blocks[id2])
+            }
             apply_merge(blocks, id1, id2);
         }
-
     });
 
     draw_regions(blocks);
 }
 
 var canvas = document.createElement('canvas');
+var globPX = undefined
 
+function setCanvas(img) {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+    globPX = []
+    let ctx = canvas.getContext('2d')
+    for (let x = 0; x < img.width; x++) {
+        let px = []
+        for (let y = 0; y < img.height; y++) {
+            let data = ctx.getImageData(x, y, 1, 1).data
+            px.push([data[0], data[1], data[2], data[3]])
+        }
+        globPX.push(px)
+    }
+}
 
 function insertTextCommand(text) {
     let node = d3.select("#commands").node();
     b = node.selectionEnd
     node.value = node.value.substring(0, b) + text + node.value.substring(b)
+}
+
+
+function diffPenalty(crss) {
+    let result = 0
+    let [w, h] = get_w_h()
+    crss.forEach(crs => {
+        crs.forEach(cr => {
+            let rgba = [cr.r, cr.g, cr.b, cr.a]
+            for (let dx = 0; dx < cr.w; dx++) {
+                for (let dy = 0; dy < cr.h; dy++) {
+                    let x = cr.x + dx
+                    let y = h - cr.y - dy - 1
+                    let px = globPX[x][y]
+                    let dresult = 0
+                    for (let i = 0; i < 4; i++) {
+                        dresult += (px[i] - rgba[i]) * (px[i] - rgba[i])
+                    }
+                    dresult = Math.sqrt(dresult)
+                    if (isNaN(dresult)) {
+                        console.log(x, y)
+                        console.log(globPX[x][y])
+                        console.log(rgba)
+                        throw cr
+                    }
+                    result += dresult
+                }
+            }
+        })
+    })
+    return Math.round(result * 0.005)
 }
 
 function set_problem() {
@@ -319,9 +401,7 @@ function set_problem() {
         var sol_folder = d3.select("#solution_folder").node().value || "best";
 
         var img = document.getElementById('png-problem');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+        setCanvas(img)
 
         d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
             d3.select("#commands").text(text)
@@ -329,7 +409,7 @@ function set_problem() {
                 .on("select", (e) => {
                     let node = d3.select("#commands").node();
                     b = node.selectionEnd
-                    apply_solution(node.value.substring(0, b))
+                    try_apply_solution(node.value.substring(0, b))
                 })
             d3.select("#png-problem")
                 .on("mousedown", (ev) => {
@@ -375,7 +455,7 @@ function set_problem() {
                         d3.select("#color-coord-sel").select("i").text("COLOR")
                     }
                 })
-            apply_solution(text)
+            try_apply_solution(text)
         });
     })
 }
@@ -396,7 +476,7 @@ function onload() {
     d3.select('#solution_draw').on("click", function (e) {
         e.stopPropagation();
         e.preventDefault();
-        apply_solution(d3.select("#commands").node().value)
+        try_apply_solution(d3.select("#commands").node().value)
     })
 
 }
