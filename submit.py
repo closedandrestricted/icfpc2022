@@ -5,7 +5,7 @@ import os
 import json
 import hashlib
 
-NPROBLEMS = 31
+NPROBLEMS = 36
 STATUS_FILENAME = "submitterStatus.json"
 
 def main():
@@ -21,7 +21,7 @@ def main():
             filename = "solutions/best/empty.txt"
         with open(filename, "rb") as f:
             filedigest = hashlib.md5(open(filename, "rb").read()).hexdigest()
-            if filedigest == status[key].get("submission_digest", 0):
+            if (key in status) and (filedigest == status[key].get("submission_digest", 0)):
                 continue
             resp = requests.post("https://robovinci.xyz/api/problems/%d" % i, files=[('file', f)], headers={"Authorization": "Bearer %s" % auth})
             print(resp.text)
