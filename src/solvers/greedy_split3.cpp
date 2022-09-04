@@ -18,7 +18,7 @@ using namespace src_solvers;
 GreedySplit3::GreedySplit3(unsigned) {}
 
 std::vector<Move> GreedySplit3::SolveI(
-    const Image& target, const Image& current,
+    unsigned pid, const Image& target, const Image& current,
     const std::vector<Block>& current_blocks) {
   // Precalc data
   auto vvv = nvector::Make<double>(target.dx + 1, target.dy + 1, 8, 0.);
@@ -107,14 +107,14 @@ std::vector<Move> GreedySplit3::SolveI(
       vbd.push_back(b);
     }
   }
-  auto s2 = GreedySplit::SolveI(target, current, vbd);
+  auto s2 = GreedySplit::SolveI(pid, target, current, vbd);
   s.insert(s.end(), s2.begin(), s2.end());
   return s;
 }
 
 std::vector<Move> GreedySplit3::SolveI(const Image& target,
                                        const Canvas& canvas) {
-  return SolveI(target, canvas.GetImage(), canvas.GetBlocks());
+  return SolveI(canvas.pid, target, canvas.GetImage(), canvas.GetBlocks());
 }
 
 Solution GreedySplit3::Solve(const Problem& p) {

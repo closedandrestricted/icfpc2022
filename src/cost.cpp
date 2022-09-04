@@ -6,14 +6,14 @@
 #include <algorithm>
 #include <cmath>
 
-double BaseCost(Move::Type type) {
+double BaseCost(unsigned pid, Move::Type type) {
   switch (type) {
     case Move::SKIP:
       return 0;
     case Move::LINE_CUT:
-      return 7;
+      return (pid > 35 ? 2 : 7);
     case Move::POINT_CUT:
-      return 10;
+      return (pid > 35 ? 3 : 10);
     case Move::COLOR:
       return 5;
     case Move::SWAP:
@@ -33,10 +33,10 @@ double Cost(const Canvas &canvas, const Move &move) {
     auto &b2 = canvas.Get(move.block_id2);
     auto msize = std::max(b.Size(), b2.Size());
     Assert(msize > 0);
-    return round(BaseCost(move.type) * canvas.Size() / msize);
+    return round(BaseCost(canvas.pid, move.type) * canvas.Size() / msize);
   } else {
     Assert(b.Size() > 0);
-    return round(BaseCost(move.type) * canvas.Size() / b.Size());
+    return round(BaseCost(canvas.pid, move.type) * canvas.Size() / b.Size());
   }
 }
 

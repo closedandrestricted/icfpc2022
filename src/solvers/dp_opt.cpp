@@ -139,13 +139,14 @@ Solution DPOpt::Solve(const Problem& p) {
           dpv.min_cost_keep_color = Similarity(target, current, b);
           auto vp = opt::Color::Points(b, target);
           dpv.color = opt::Color::Median(vp);
-          dpv.cost_to_color = BaseCost(Move::COLOR) * target.Size() / b.Size();
+          dpv.cost_to_color =
+              BaseCost(p.Index(), Move::COLOR) * target.Size() / b.Size();
           dpv.min_cost_recolor =
               dpv.cost_to_color + opt::Color::Cost(vp, dpv.color);
           dpv.i0 = dpv.j0 = dpv.i1 = dpv.j1 = 0;
 
           double split_cost =
-              BaseCost(Move::LINE_CUT) * target.Size() / b.Size();
+              BaseCost(p.Index(), Move::LINE_CUT) * target.Size() / b.Size();
 
           double min_cost_after_split = split_cost + dpv.cost_to_color;
           if ((dpv.min_cost_keep_color <= min_cost_after_split) &&

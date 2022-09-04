@@ -17,11 +17,6 @@ void Canvas::InitBlocks() {
   isl_cost = 0;
 }
 
-void Canvas::Init(unsigned dx, unsigned dy) {
-  image.Init(dx, dy);
-  InitBlocks();
-}
-
 std::vector<Block> Canvas::GetBlocks() const {
   std::vector<Block> vb;
   vb.reserve(blocks.size());
@@ -115,9 +110,16 @@ bool TestFile(const std::string &filename) {
 }
 }  // namespace
 
-bool Canvas::LoadJSON(const std::string &filename) {
+void Canvas::Init(unsigned _pid, unsigned dx, unsigned dy) {
+  pid = _pid;
+  image.Init(dx, dy);
+  InitBlocks();
+}
+
+bool Canvas::LoadJSON(unsigned _pid, const std::string &filename) {
   // std::cout << "Load canvas from file " << filename << std::endl;
-  if (!TestFile(filename)) return true;
+  pid = _pid;
+  Assert(TestFile(filename));
   files::JSON js;
   if (!js.Load(filename)) return false;
   // std::cout << "Json loaded" << std::endl;
@@ -142,13 +144,15 @@ bool Canvas::LoadJSON(const std::string &filename) {
   return true;
 }
 
-bool Canvas::LoadPNG(const std::string &filename) {
+bool Canvas::LoadPNG(unsigned _pid, const std::string &filename) {
+  pid = _pid;
   if (!image.LoadPNG(filename)) return false;
   InitBlocks();
   return true;
 }
 
-bool Canvas::LoadSJSON(const std::string &filename) {
+bool Canvas::LoadSJSON(unsigned _pid, const std::string &filename) {
+  pid = _pid;
   if (!image.LoadSJSON(filename)) return false;
   InitBlocks();
   return true;

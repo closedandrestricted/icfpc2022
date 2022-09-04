@@ -18,15 +18,14 @@ class Canvas {
   std::unordered_map<std::string, Block> blocks;
   unsigned index;
   double isl_cost;
+  unsigned pid;
 
  protected:
   void InitBlocks();
 
  public:
-  Canvas() { Init(1, 1); }
-  Canvas(unsigned dx, unsigned dy) { Init(dx, dy); }
-
-  void Init(unsigned dx, unsigned dy);
+  Canvas() { Init(0, 1, 1); }
+  Canvas(unsigned pid, unsigned dx, unsigned dy) { Init(pid, dx, dy); }
 
   Image &GetImage() { return image; }
   const Image &GetImage() const { return image; }
@@ -46,7 +45,8 @@ class Canvas {
 
   void Apply(const Move &move);
 
-  bool LoadJSON(const std::string &filename);
-  bool LoadPNG(const std::string &filename);
-  bool LoadSJSON(const std::string &filename);
+  void Init(unsigned pid, unsigned dx, unsigned dy);
+  bool LoadJSON(unsigned pid, const std::string &filename);
+  bool LoadPNG(unsigned pid, const std::string &filename);
+  bool LoadSJSON(unsigned pid, const std::string &filename);
 };

@@ -27,7 +27,8 @@ class GreedySplit : public Base {
 
   std::string Name() const override { return "greedy_split"; }
 
-  static std::vector<Move> SolveI(const Image& target, const Image& current,
+  static std::vector<Move> SolveI(unsigned pid, const Image& target,
+                                  const Image& current,
                                   const std::vector<Block>& current_blocks);
 
   std::vector<Move> SolveI(const Image& target, const Canvas& canvas);

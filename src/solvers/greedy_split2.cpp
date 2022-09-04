@@ -14,6 +14,7 @@
 using namespace src_solvers;
 
 std::vector<Move> GreedySplit2::SolveI(const Image& i, const Canvas& canvas) {
+  auto pid = canvas.pid;
   std::vector<Move> s;
   std::queue<std::pair<Block, Pixel>> q;
   std::vector<std::string> vid;
@@ -32,11 +33,11 @@ std::vector<Move> GreedySplit2::SolveI(const Image& i, const Canvas& canvas) {
     unsigned best_split_x = 0, best_split_y = 0;
     Block best_b1, best_b2;
     Pixel best_c1, best_c2;
-    double split_cost = (BaseCost(Move::LINE_CUT) * i.Size()) / bq.Size();
+    double split_cost = (BaseCost(pid, Move::LINE_CUT) * i.Size()) / bq.Size();
     for (unsigned x = bq.x0 + 1; x < bq.x1; ++x) {
       unsigned dx = std::max(x - bq.x0, bq.x1 - x);
       double color_cost =
-          (BaseCost(Move::COLOR) * i.Size()) / (dx * (bq.y1 - bq.y0));
+          (BaseCost(pid, Move::COLOR) * i.Size()) / (dx * (bq.y1 - bq.y0));
       double extra_cost = split_cost + color_cost;
       if (extra_cost >= best_cost) continue;
       Block b1{bq.x0, x, bq.y0, bq.y1, bq.id + ".0"};
@@ -59,7 +60,7 @@ std::vector<Move> GreedySplit2::SolveI(const Image& i, const Canvas& canvas) {
     for (unsigned y = bq.y0 + 1; y < bq.y1; ++y) {
       unsigned dy = std::max(y - bq.y0, bq.y1 - y);
       double color_cost =
-          (BaseCost(Move::COLOR) * i.Size()) / (dy * (bq.x1 - bq.x0));
+          (BaseCost(pid, Move::COLOR) * i.Size()) / (dy * (bq.x1 - bq.x0));
       double extra_cost = split_cost + color_cost;
       if (extra_cost >= best_cost) continue;
       Block b1{bq.x0, bq.x1, bq.y0, y, bq.id + ".0"};

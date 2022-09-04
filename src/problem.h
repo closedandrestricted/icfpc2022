@@ -12,6 +12,7 @@ class Problem : public solvers::Problem {
  protected:
   Image target;
   Canvas initial;
+  unsigned index;
 
  protected:
   bool LoadI(const std::string& _id, const std::string& filename);
@@ -19,6 +20,7 @@ class Problem : public solvers::Problem {
  public:
   const Image& Target() const { return target; }
   const Canvas& InitialCanvas() const { return initial; }
+  unsigned Index() const { return index; }
 
   static std::string GetFileName(const std::string& _id);
   bool Load(const std::string& _id);

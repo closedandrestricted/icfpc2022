@@ -4,16 +4,16 @@
 
 bool Problem::LoadI(const std::string& _id, const std::string& filename) {
   id = _id;
+  index = stoi(id);
   if (!target.LoadPNG(filename)) return false;
-  int pid = stoi(id);
-  if (pid <= 25) {
-    initial.Init(target.dx, target.dy);
-  } else if (pid <= 35) {
+  if (index <= 25) {
+    initial.Init(index, target.dx, target.dy);
+  } else if (index <= 35) {
     auto filename2 = filename.substr(0, filename.size() - 3) + "initial.json";
-    return initial.LoadJSON(filename2);
+    return initial.LoadJSON(index, filename2);
   } else {
     auto filename2 = filename.substr(0, filename.size() - 3) + "source.png";
-    return initial.LoadPNG(filename2);
+    return initial.LoadPNG(index, filename2);
   }
   return true;
 }

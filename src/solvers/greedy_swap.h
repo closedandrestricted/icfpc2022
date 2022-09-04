@@ -19,23 +19,21 @@ class GreedySwap : public Base {
  public:
   GreedySwap(unsigned, Base::PSolver subsolver);
 
-  PSolver Clone() const override {
-    return std::make_shared<GreedySwap>(*this);
-  }
+  PSolver Clone() const override { return std::make_shared<GreedySwap>(*this); }
 
   bool SkipSolutionRead() const override { return true; }
 
   std::string Name() const override { return "greedy_swap"; }
 
-  static std::vector<Move> SolveI(const Image& target, const Image& current,
+  static std::vector<Move> SolveI(unsigned pid, const Image& target,
+                                  const Image& current,
                                   const std::vector<Block>& current_blocks);
 
   std::vector<Move> SolveI(const Image& target, const Canvas& canvas);
 
   Solution Solve(const Problem& p) override;
 
-private:
-    Base::PSolver subsolver_;
+ private:
+  Base::PSolver subsolver_;
 };
 }  // namespace src_solvers
-
