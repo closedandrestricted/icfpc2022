@@ -5,7 +5,7 @@ import os
 import json
 import hashlib
 
-NPROBLEMS = 36
+NPROBLEMS = int(open("nprob", "r").read().strip()) + 1
 STATUS_FILENAME = "submitterStatus.json"
 
 def main():
@@ -35,7 +35,7 @@ def main():
 
     for i in range(1, NPROBLEMS):
         key = "task%d" % i
-        if key in status and len(status[key]["submission_status"]) == 0:
+        if key in status and (len(status[key].get("submission_status", {})) == 0 or status[key].get("submission_status", {}).get("status", "PROCESSING") == "PROCESSING"):
             resp = requests.get("https://robovinci.xyz/api/submissions/%d" % status[key]["submission_id"], headers={"Authorization": "Bearer %s" % auth})
             print(resp.text)
             if resp.text != "Limit exceeded":
