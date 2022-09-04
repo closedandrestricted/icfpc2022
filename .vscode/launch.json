@@ -11,12 +11,12 @@
             "program": "${workspaceFolder}/debug/build/icfpc",
             "args": [
                 "-mode",
-                // "run",
-                // "-solver",
-                // "inv_greedy",
-                "update",
-                "-solution",
-                "webedit",
+                "run",
+                "-solver",
+                "greedy_split3",
+                // "update",
+                // "-solution",
+                // "webedit",
                 "-nthreads",
                 "0"
             ],
