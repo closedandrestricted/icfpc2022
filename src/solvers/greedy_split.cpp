@@ -35,7 +35,7 @@ std::vector<Move> GreedySplit::SolveI(
     auto vp = opt::Color::Points(b, target);
     auto bc = opt::Color::MinCost(vp);
     q.push({b, Similarity(target, current, b), bc,
-            BaseCost(pid, Move::COLOR) * target.Size() / b.Size(),
+            Cost(pid, Move::COLOR, target.Size(), b),
             opt::Color::Cost(vp, bc)});
   }
   for (; !q.empty(); q.pop()) {
@@ -45,12 +45,11 @@ std::vector<Move> GreedySplit::SolveI(
     auto best_cost = cost0;
     unsigned best_split_x = 0, best_split_y = 0;
     QueueNode qn1, qn2;
-    double split_cost =
-        (BaseCost(pid, Move::LINE_CUT) * target.Size()) / bq.Size();
+    double split_cost = Cost(pid, Move::LINE_CUT, target.Size(), bq);
     for (unsigned x = bq.x0 + 1; x < bq.x1; ++x) {
       unsigned dx = std::max(x - bq.x0, bq.x1 - x);
       double color_cost =
-          (BaseCost(pid, Move::COLOR) * target.Size()) / (dx * (bq.y1 - bq.y0));
+          Cost(pid, Move::COLOR, target.Size(), dx * (bq.y1 - bq.y0));
       double extra_cost = split_cost + color_cost;
       if (extra_cost >= best_cost) continue;
       Block b1{bq.x0, x, bq.y0, bq.y1, bq.id + ".0"};
@@ -72,17 +71,15 @@ std::vector<Move> GreedySplit::SolveI(
         best_split_x = x;
         best_split_y = 0;
         qn1 = QueueNode{b1, sim_cost0_1, c1,
-                        BaseCost(pid, Move::COLOR) * target.Size() / b1.Size(),
-                        sim_cost_1};
+                        Cost(pid, Move::COLOR, target.Size(), b1), sim_cost_1};
         qn2 = QueueNode{b2, sim_cost0_2, c2,
-                        BaseCost(pid, Move::COLOR) * target.Size() / b2.Size(),
-                        sim_cost_2};
+                        Cost(pid, Move::COLOR, target.Size(), b2), sim_cost_2};
       }
     }
     for (unsigned y = bq.y0 + 1; y < bq.y1; ++y) {
       unsigned dy = std::max(y - bq.y0, bq.y1 - y);
       double color_cost =
-          (BaseCost(pid, Move::COLOR) * target.Size()) / (dy * (bq.x1 - bq.x0));
+          Cost(pid, Move::COLOR, target.Size(), dy * (bq.x1 - bq.x0));
       double extra_cost = split_cost + color_cost;
       if (extra_cost >= best_cost) continue;
       Block b1{bq.x0, bq.x1, bq.y0, y, bq.id + ".0"};
@@ -104,11 +101,9 @@ std::vector<Move> GreedySplit::SolveI(
         best_split_x = 0;
         best_split_y = y;
         qn1 = QueueNode{b1, sim_cost0_1, c1,
-                        BaseCost(pid, Move::COLOR) * target.Size() / b1.Size(),
-                        sim_cost_1};
+                        Cost(pid, Move::COLOR, target.Size(), b1), sim_cost_1};
         qn2 = QueueNode{b2, sim_cost0_2, c2,
-                        BaseCost(pid, Move::COLOR) * target.Size() / b2.Size(),
-                        sim_cost_2};
+                        Cost(pid, Move::COLOR, target.Size(), b2), sim_cost_2};
       }
     }
     vid.push_back(bq.id);

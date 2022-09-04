@@ -26,6 +26,14 @@ double BaseCost(unsigned pid, Move::Type type) {
   }
 }
 
+double Cost(unsigned pid, Move::Type type, double tsize, double bsize) {
+  return round(BaseCost(pid, type) * tsize / bsize);
+}
+
+double Cost(unsigned pid, Move::Type type, double tsize, const Block &b) {
+  return Cost(pid, type, tsize, b.Size());
+}
+
 double Cost(const Canvas &canvas, const Move &move) {
   if (move.type == Move::SKIP) return 0.0;
   auto &b = canvas.Get(move.block_id1);
@@ -33,10 +41,10 @@ double Cost(const Canvas &canvas, const Move &move) {
     auto &b2 = canvas.Get(move.block_id2);
     auto msize = std::max(b.Size(), b2.Size());
     Assert(msize > 0);
-    return round(BaseCost(canvas.pid, move.type) * canvas.Size() / msize);
+    return Cost(canvas.pid, move.type, canvas.Size(), msize);
   } else {
     Assert(b.Size() > 0);
-    return round(BaseCost(canvas.pid, move.type) * canvas.Size() / b.Size());
+    return Cost(canvas.pid, move.type, canvas.Size(), b.Size());
   }
 }
 

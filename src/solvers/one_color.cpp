@@ -18,7 +18,7 @@ Solution OneColor::Solve(const Problem& p) {
     auto vp = opt::Color::Points(b, i);
     auto bc = opt::Color::MinCost(vp);
     auto new_sim_cost = opt::Color::Cost(vp, bc);
-    auto new_isl_cost = BaseCost(p.Index(), Move::COLOR) * i.Size() / b.Size();
+    auto new_isl_cost = Cost(p.Index(), Move::COLOR, i.Size(), b);
     if (cur_cost > new_isl_cost + new_sim_cost)
       s.push_back(Move(Move::COLOR, b.id, bc));
   }
