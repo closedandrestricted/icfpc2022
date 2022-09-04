@@ -10,12 +10,16 @@
 #include <fstream>
 #include <iostream>
 
-void Canvas::Init(unsigned dx, unsigned dy) {
-  image.Init(dx, dy);
+void Canvas::InitBlocks() {
   blocks.clear();
-  blocks["0"] = {0, dx, 0, dy, "0"};
+  blocks["0"] = {0, image.dx, 0, image.dy, "0"};
   index = 0;
   isl_cost = 0;
+}
+
+void Canvas::Init(unsigned dx, unsigned dy) {
+  image.Init(dx, dy);
+  InitBlocks();
 }
 
 std::vector<Block> Canvas::GetBlocks() const {
@@ -111,7 +115,7 @@ bool TestFile(const std::string &filename) {
 }
 }  // namespace
 
-bool Canvas::Load(const std::string &filename) {
+bool Canvas::LoadJSON(const std::string &filename) {
   // std::cout << "Load canvas from file " << filename << std::endl;
   if (!TestFile(filename)) return true;
   files::JSON js;
@@ -135,5 +139,17 @@ bool Canvas::Load(const std::string &filename) {
     for (unsigned j = 0; j < 4; ++j) color.rgba[j] = jc.GetInteger(j);
     image.Color(b, color);
   }
+  return true;
+}
+
+bool Canvas::LoadPNG(const std::string &filename) {
+  if (!image.LoadPNG(filename)) return false;
+  InitBlocks();
+  return true;
+}
+
+bool Canvas::LoadSJSON(const std::string &filename) {
+  if (!image.LoadSJSON(filename)) return false;
+  InitBlocks();
   return true;
 }

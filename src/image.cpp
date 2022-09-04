@@ -23,7 +23,7 @@ void Image::Color(const Block& b, const Pixel& color) {
   }
 }
 
-bool Image::Load(const std::string& filename) {
+bool Image::LoadPNG(const std::string& filename) {
   FILE* png;
   png = fopen(filename.c_str(), "rb");
   if (png == NULL) {
@@ -105,4 +105,9 @@ bool Image::Load(const std::string& filename) {
 
   FakeUse(ret);
   return true;
+}
+
+bool Image::LoadSJSON(const std::string& /*filename*/) {
+  // TODO: real code
+  return false;
 }

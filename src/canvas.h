@@ -19,6 +19,9 @@ class Canvas {
   unsigned index;
   double isl_cost;
 
+ protected:
+  void InitBlocks();
+
  public:
   Canvas() { Init(1, 1); }
   Canvas(unsigned dx, unsigned dy) { Init(dx, dy); }
@@ -43,5 +46,7 @@ class Canvas {
 
   void Apply(const Move &move);
 
-  bool Load(const std::string &filename);
+  bool LoadJSON(const std::string &filename);
+  bool LoadPNG(const std::string &filename);
+  bool LoadSJSON(const std::string &filename);
 };

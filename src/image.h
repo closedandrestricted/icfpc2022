@@ -22,7 +22,9 @@ class Image {
   double Size() const { return dx * dy; }
 
   void Init(unsigned _dx, unsigned _dy);
-  bool Load(const std::string &filename);
+
+  bool LoadPNG(const std::string &filename);
+  bool LoadSJSON(const std::string &filename);
 
   void Color(const Block &b, const Pixel &color);
 };
