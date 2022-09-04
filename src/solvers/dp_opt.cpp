@@ -17,10 +17,8 @@
 
 using namespace src_solvers;
 
-Solution DPOpt::Solve(const Problem& p) {
-  unsigned pid = p.Index();
-  auto& target = p.Target();
-  auto& canvas = p.InitialCanvas();
+std::vector<Move> DPOpt::SolveI(const Image& target, const Canvas& canvas) {
+  unsigned pid = canvas.pid;
   auto& current = canvas.GetImage();
   auto initial_blocks = canvas.GetBlocks();
 
@@ -33,7 +31,7 @@ Solution DPOpt::Solve(const Problem& p) {
   }
   nvector::UniqueUnsorted(vhsx);
   nvector::UniqueUnsorted(vhsy);
-  if (vhsx.size() * vhsy.size() > max_xy) return Solution(p.Id(), {});
+  if (vhsx.size() * vhsy.size() > max_xy) return {};
 
   // Precalc data
   auto vvv = nvector::Make<double>(target.dx + 1, target.dy + 1, 8, 0.);
@@ -114,7 +112,6 @@ Solution DPOpt::Solve(const Problem& p) {
       vy.erase(vy.begin() + bj);
     }
   }
-  std::cout << "Problem " << p.Id() << "\tcompression finished." << std::endl;
 
   // DP
   class DPV {
@@ -204,7 +201,6 @@ Solution DPOpt::Solve(const Problem& p) {
       }
     }
   }
-  std::cout << "Problem " << p.Id() << "\tdp finished." << std::endl;
 
   // Construct initial solution
   // Blocks use indexes instead of raw coordinates
@@ -301,8 +297,15 @@ Solution DPOpt::Solve(const Problem& p) {
   }
   s.swap(s2);
 
+  std::cout << "Expected cost = " << expected_cost + canvas.isl_cost
+            << std::endl;
+  return s;
+}
+
+Solution DPOpt::Solve(const Problem& p) {
+  std::vector<Move> s = SolveI(p.Target(), p.InitialCanvas());
   auto final_score = Evaluator::Apply(p, s).FScore();
-  std::cout << "Expected cost = " << expected_cost
-            << "\tfinal = " << final_score << std::endl;
+  std::cout << "Final cost = " << final_score << std::endl;
+  std::cout << "Done with " << p.Id() << std::endl;
   return Solution(p.Id(), s);
 }
