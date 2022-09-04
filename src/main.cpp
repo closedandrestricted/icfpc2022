@@ -3,6 +3,7 @@
 #include "solvers/greedy_split.h"
 #include "solvers/greedy_split2.h"
 #include "solvers/greedy_split3.h"
+#include "solvers/greedy_swap.h"
 #include "solvers/one_color.h"
 #include "utils/check_with_adjuster.h"
 #include "utils/evaluate_solution.h"
@@ -16,6 +17,7 @@ void InitCommaneLine(files::CommandLine& cmd) {
   cmd.AddArg("mode", "eval");
   cmd.AddArg("solution", "best");
   cmd.AddArg("solver", "one_color");
+  cmd.AddArg("solver2", "one_color");
   cmd.AddArg("timelimit", 10);
   cmd.AddArg("nthreads", 4);
   cmd.AddArg("first_problem", 1);
@@ -33,6 +35,8 @@ src_solvers::Base::PSolver CreateSolver(const files::CommandLine& cmd,
     return std::make_shared<src_solvers::GreedySplit2>(timelimit);
   } else if (solver_name == "greedy_split3") {
     return std::make_shared<src_solvers::GreedySplit3>(timelimit);
+  } else if (solver_name == "greedy_swap") {
+    return std::make_shared<src_solvers::GreedySwap>(timelimit, CreateSolver(cmd, cmd.GetString("solver2")));
   } else {
     std::cerr << "Unknown solver type: " << solver_name << std::endl;
     exit(-1);
