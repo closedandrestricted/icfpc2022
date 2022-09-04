@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import collections
 import json
-from mimetypes import init
 import os
 import re
 
