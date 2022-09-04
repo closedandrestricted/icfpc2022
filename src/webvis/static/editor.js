@@ -223,7 +223,7 @@ function draw_regions(blocks) {
             y = (2 * h - 1 - y) / 2
             let clicked = []
             blockarr.forEach((b0) => {
-                if (b0.x <= x && x <= b0.x + b0.w && b0.y <= y && y <= b0.y + b0.h) {
+                if (rect_contains_xy(b0, x, y)) {
                     clicked.push(b0)
                 }
             })
@@ -272,9 +272,146 @@ function cost(baseCost, w, h, block) {
     return Math.round(baseCost * w * h / size(block))
 }
 
+function rect_contains_xy(b0, x, y) {
+    return (b0.x <= x && x <= b0.x + b0.w && b0.y <= y && y <= b0.y + b0.h)
+}
+
+function get_block_id_for_coords(blocks, x, y) {
+    for (const [key, block] of Object.entries(blocks)) {
+        if (rect_contains_xy(block, x, y)) {
+            return key
+        }
+    }
+    console.log(x, y)
+    console.log(blockarr)
+    throw "did not find block for coords"
+}
+
+function find_pixel_color(block, x, y) {
+    for (let i = 0; i < block.crs.length; i++) {
+        let cr = block.crs[i]
+        if (rect_contains_xy(cr, x - block.x, y - block.y)) {
+            return [cr.r, cr.g, cr.b, cr.a]
+        }
+    }
+    console.log(x, y)
+    console.log(block)
+    throw "did not find color region for coords"
+}
+
+function get_1d_paint_plan(rgbas, dx, w, h) {
+    let cost = [0]
+    let pcut = [-1]
+    let clrs = [undefined]
+    let kk = h / dx;
+    for (let i = 0; i < rgbas.length; i++) {
+        cost.push(1e20)
+        pcut.push(-1)
+        clrs.push(undefined)
+        for (let j = 0; j <= i; j++) {
+            let curcost = cost[j] + Math.round(8 * w * h / (dx * dx * (kk - j)))
+            let rgba_num = [0, 0, 0, 0]
+            let rgba_den = [0, 0, 0, 0]
+            let rgba_avg = [0, 0, 0, 0]
+            for (let k = j; k <= i; k++) {
+                for (let c = 0; c < 4; c++) {
+                    rgba_num[c] += rgbas[k][c];
+                    rgba_den[c] += 1.0
+                }
+            }
+            for (let c = 0; c < 4; c++) {
+                rgba_avg[c] = Math.round(rgba_num[c] / rgba_den[c])
+            }
+            let imgdiff = 0
+            for (let k = j; k <= i; k++) {
+                for (let c = 0; c < 4; c++) {
+                    let x = (rgbas[k][c] - rgba_avg[c])
+                    imgdiff += x * x
+                }
+            }
+            imgdiff = Math.sqrt(imgdiff)
+            imgdiff = imgdiff * (i - j + 1) * dx * dx
+            curcost += Math.round(0.005 * imgdiff)
+            if (curcost < cost[i + 1]) {
+                cost[i + 1] = curcost
+                pcut[i + 1] = j
+                clrs[i + 1] = rgba_avg
+            }
+        }
+    }
+    // console.log(cost)
+    // console.log(pcut)
+    // console.log(clrs)
+    let i = rgbas.length
+    let plan = {}
+    while (i > 0) {
+        plan[i - 1] = clrs[i]
+        i = pcut[i]
+    }
+    return plan
+}
+
+function auto_solve(initial) {
+    blocks = blocks_init(initial)
+    let dx = blocks["0"].w
+    let dy = blocks["0"].h
+    text = ''
+    console.log(initial)
+    for (let x = dx / 2; x <= initial.width; x += dx) {
+        for (let y = dy / 2 + dy; y <= initial.height; y += dy) {
+            apply_solution(blocks, text)
+            b1_id = get_block_id_for_coords(blocks, x, y - dy)
+            b2_id = get_block_id_for_coords(blocks, x, y)
+            text += 'merge [' + b1_id + '] [' + b2_id + ']\n'
+            blocks = blocks_init(initial)
+        }
+        apply_solution(blocks, text)
+        let rgbas = []
+        for (let y = dy / 2; y <= initial.height; y += dy) {
+            let rgba_num = [0, 0, 0, 0]
+            let rgba_den = [0, 0, 0, 0]
+            for (let xx = x - dx / 2; xx < x + dx / 2; xx++) {
+                for (let yy = y - dy / 2; yy < y + dy / 2; yy++) {
+                    for (let i = 0; i < 4; i++) {
+                        rgba_num[i] += globPX[xx][initial.height - yy - 1][i];
+                        rgba_den[i] += 1
+                    }
+                }
+            }
+            let rgba = [0, 0, 0, 0]
+            for (let i = 0; i < 4; i++) {
+                rgba[i] = Math.round(rgba_num[i] / rgba_den[i])
+            }
+            rgbas.push(rgba)
+        }
+        blocks = blocks_init(initial)
+
+        // console.log('RGBAS')
+        // console.log(rgbas)
+
+        plan = get_1d_paint_plan(rgbas, dx, initial.width, initial.height)
+        for (let step = 0; step < rgbas.length; step++) {
+            if (!plan[step]) continue
+            apply_solution(blocks, text)
+            let y = dy / 2 + dy * step
+            b0_id = get_block_id_for_coords(blocks, x, y)
+            text += 'color [' + b0_id + '] [' + plan[step] + ']\n'
+            if (y + dy < initial.height) {
+                text += 'cut [' + b0_id + '] [Y] [' + (y + dy / 2) + ']\n'
+                prevcut = true
+            }
+            blocks = blocks_init(initial)
+        }
+        console.log("At x = " + x)
+    }
+    d3.select("#commands").node().value = text
+    apply_solution(blocks, text)
+}
+
 function try_apply_solution(initial, text) {
     try {
-        apply_solution(initial, text)
+        blocks = blocks_init(initial)
+        apply_solution(blocks, text)
     } catch (e) {
         d3.select("#penalty_total").text("ERROR!!")
         console.log(e)
@@ -282,7 +419,10 @@ function try_apply_solution(initial, text) {
     }
 }
 
-function blocks_init(initial, blocks) {
+function blocks_init(initial) {
+    var blocks = {
+        "penalty": 0,
+    };
     initial.blocks.forEach(jsonblock => {
         let [x, w, y, h] = [
             jsonblock.bottomLeft[0],
@@ -296,18 +436,13 @@ function blocks_init(initial, blocks) {
             [colorRegion(0, w, 0, h, r, g, b, a)])
     })
     blocks.last_id = initial.blocks.length - 1
-    console.log(blocks)
+    return blocks;
 }
 
-function apply_solution(initial, text) {
+function apply_solution(blocks, text) {
     lines = text.split("\n")
 
     let [w, h] = get_w_h();
-
-    var blocks = {
-        "penalty": 0,
-    };
-    blocks_init(initial, blocks)
 
     lines.forEach(line => {
         line = line.replace(/\s/g, '');
@@ -343,7 +478,7 @@ function apply_solution(initial, text) {
         match = line.match(/swap\[([\d.]+)\]\[([\d.]+)\]/i)
         if (match) {
             let [_, id1, id2] = match;
-            if (size(blocks[id1] > size(blocks[id2]))) {
+            if (size(blocks[id1]) > size(blocks[id2])) {
                 blocks.penalty += cost(3, w, h, blocks[id1])
             } else {
                 blocks.penalty += cost(3, w, h, blocks[id2])
@@ -354,7 +489,7 @@ function apply_solution(initial, text) {
         match = line.match(/merge\[([\d.]+)\]\[([\d.]+)\]/i)
         if (match) {
             let [_, id1, id2] = match;
-            if (size(blocks[id1] > size(blocks[id2]))) {
+            if (size(blocks[id1]) > size(blocks[id2])) {
                 blocks.penalty += cost(1, w, h, blocks[id1])
             } else {
                 blocks.penalty += cost(1, w, h, blocks[id2])
@@ -379,8 +514,16 @@ function setCanvas(img) {
         let px = []
         for (let y = 0; y < img.height; y++) {
             let data = ctx.getImageData(x, y, 1, 1).data
-            px.push([data[0], data[1], data[2], data[3]])
+            data = [data[0], data[1], data[2], data[3]]
+            data.forEach(d => {
+                if (isNaN(d)) {
+                    console.log(data, x, y)
+                    throw "NaN in Canvas"
+                }
+            })
+            px.push(data)
         }
+
         globPX.push(px)
     }
 }
@@ -426,6 +569,12 @@ function set_solution() {
     var id = d3.select("#problem_id").node().value;
     var sol_folder = d3.select("#solution_folder").node().value || "best";
     d3.json("/initial?id=" + id).then(initial => {
+        d3.select('#auto_solve').on('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            console.log('autosolve')
+            auto_solve(initial)
+        })
         d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
             d3.select("#commands").text(text)
             d3.select("#commands")
