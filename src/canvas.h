@@ -8,6 +8,7 @@
 
 #include <string.h>
 #include <unordered_map>
+#include <vector>
 
 class Move;
 
@@ -24,7 +25,12 @@ class Canvas {
 
   void Init(unsigned dx, unsigned dy);
 
+  Image &GetImage() { return image; }
+  const Image &GetImage() const { return image; }
+
   unsigned BSize() const { return blocks.size(); }
+  std::vector<Block> GetBlocks() const;
+
   double Size() const { return image.Size(); }
 
   Block &Get(const std::string &id) { return blocks[id]; }

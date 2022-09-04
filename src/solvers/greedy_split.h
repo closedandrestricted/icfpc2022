@@ -1,5 +1,6 @@
 #pragma once
 
+#include "block.h"
 #include "canvas.h"
 #include "image.h"
 #include "problem.h"
@@ -22,9 +23,12 @@ class GreedySplit : public Base {
     return std::make_shared<GreedySplit>(*this);
   }
 
-  // bool SkipSolutionRead() const override { return true; }
+  bool SkipSolutionRead() const override { return true; }
 
-  std::string Name() const override { return "greedy_split"; }
+  std::string Name() const override { return "greedy_split1"; }
+
+  std::vector<Move> SolveI(const Image& target, const Image& current,
+                           const std::vector<Block>& current_blocks);
 
   std::vector<Move> SolveI(const Image& target, const Canvas& canvas);
 

@@ -18,6 +18,13 @@ void Canvas::Init(unsigned dx, unsigned dy) {
   isl_cost = 0;
 }
 
+std::vector<Block> Canvas::GetBlocks() const {
+  std::vector<Block> vb;
+  vb.reserve(blocks.size());
+  for (auto &it : blocks) vb.push_back(it.second);
+  return vb;
+}
+
 void Canvas::Apply(const Move &move) {
   isl_cost += Cost(*this, move);
   switch (move.type) {
