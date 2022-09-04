@@ -17,7 +17,7 @@ class GreedySplit3 : public Base {
   using TBase = Base;
 
  public:
-  GreedySplit3(unsigned) {}
+  GreedySplit3(unsigned);
 
   PSolver Clone() const override {
     return std::make_shared<GreedySplit3>(*this);
