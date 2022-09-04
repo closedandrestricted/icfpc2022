@@ -21,7 +21,7 @@ void Canvas::Init(unsigned dx, unsigned dy) {
 std::vector<Block> Canvas::GetBlocks() const {
   std::vector<Block> vb;
   vb.reserve(blocks.size());
-  for (auto &it : blocks) vb.push_back(it.second);
+  for (const auto &it : blocks) vb.emplace_back(it.second);
   return vb;
 }
 
