@@ -73,9 +73,10 @@ Solution Simple::Check(const Problem& p, const Solution& s) {
       }
       m.type = type;
     }
-    if (bfound) {
-      std::cout << "Improvement found for problem " << s.GetId() << std::endl;
-    }
+    // if (bfound) {
+    //   std::cout << "Improvement found for problem " << s.GetId() <<
+    //   std::endl;
+    // }
   }
   std::cout << "Done with problem " << s.GetId() << std::endl;
   return Solution(s.GetId(), new_s);
