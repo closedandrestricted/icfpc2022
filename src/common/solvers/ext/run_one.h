@@ -1,7 +1,10 @@
 #pragma once
 
+#include "adjusters/simple.h"
+
 #include "common/base.h"
 
+#include <iostream>
 #include <string>
 
 namespace solvers {
@@ -28,6 +31,16 @@ inline void RunOne(TSolver& solver, const std::string& problem_id) {
   }
   auto r = TEvaluator::Apply(p, s);
   if (!r.correct) return;
+  // New code
+  // Adjuster
+  adj::Simple a;
+  s = a.Check(p, s);
+  r = TEvaluator::Apply(p, s);
+  if (!r.correct) {
+    std::cout << "Auto adjuster destroyed solution!!!" << std::endl;
+    return;
+  }
+  // End of new code
   if (new_solution && !solver.SkipSolutionWrite()) {
     TSolution scache;
     bool ok = scache.Load(problem_id, solver_name);
