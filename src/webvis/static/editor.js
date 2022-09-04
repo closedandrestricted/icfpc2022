@@ -303,7 +303,7 @@ function get_1d_paint_plan(rgbas, dx, w, h) {
     let cost = [0]
     let pcut = [-1]
     let clrs = [undefined]
-    let kk = h / dx;
+    let kk = w / dx;
     for (let i = 0; i < rgbas.length; i++) {
         cost.push(1e20)
         pcut.push(-1)
