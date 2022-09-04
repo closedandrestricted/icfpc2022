@@ -14,9 +14,9 @@
                 // "run",
                 // "-solver",
                 // "inv_greedy",
-                "eval",
+                "update",
                 "-solution",
-                "best",
+                "webedit",
                 "-nthreads",
                 "0"
             ],

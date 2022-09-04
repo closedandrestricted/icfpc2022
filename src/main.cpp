@@ -29,6 +29,10 @@ int main(int argc, char** argv) {
   auto mode = cmd.GetString("mode");
   if (mode == "eval") {
     EvaluateSolution(cmd.GetString("solution"));
+  } else if (mode == "adjust") {
+    CheckWithAdjuster<adj::Simple>(cmd.GetString("solution"));
+  } else if (mode == "update") {
+    UpdateBest(cmd.GetString("solution"));
   } else if (mode == "run") {
     src_solvers::Base::PSolver s;
     auto solver_name = cmd.GetString("solver");
@@ -51,8 +55,6 @@ int main(int argc, char** argv) {
       solvers::ext::RunNMT<src_solvers::Base>(*s, cmd.GetInt("first_problem"),
                                               cmd.GetInt("last_problem"),
                                               nthreads);
-  } else if (mode == "adjust") {
-    CheckWithAdjuster<adj::Simple>(cmd.GetString("solution"));
   } else {
     std::cerr << "Unknown mode " << mode << std::endl;
   }
