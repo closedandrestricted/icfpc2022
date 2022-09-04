@@ -53,7 +53,7 @@ double Similarity(const Image &i1, const Image &i2) {
   double s = 0;
   for (unsigned i = 0; i < i1.dx * i1.dy; ++i)
     s += Distance(i1.pixels[i], i2.pixels[i]);
-  return round(s / 200.0);
+  return s / 200.0;
 }
 
 double Similarity(const Image &i1, const Image &i2, const Block &b) {

@@ -12,9 +12,8 @@ using namespace adj;
 
 namespace {
 template <class TValue>
-bool CheckValue(TValue& value, int min_value, int max_value,
-                int64_t& best_score, const Problem& p,
-                std::vector<Move>& moves) {
+bool CheckValue(TValue& value, int min_value, int max_value, double& best_score,
+                const Problem& p, std::vector<Move>& moves) {
   bool bfound = false;
   int ivalue = int(value);
   for (int dv : {-1, 1}) {
@@ -24,7 +23,7 @@ bool CheckValue(TValue& value, int min_value, int max_value,
       if ((ivalue < min_value) || (ivalue > max_value)) break;
       try {
         value = TValue(ivalue);
-        auto score = Evaluator::Apply(p, moves).DScore();
+        auto score = Evaluator::Apply(p, moves).FScore();
         if (score < best_score) {
           best_score = score;
           bfound = b = true;
@@ -40,7 +39,7 @@ bool CheckValue(TValue& value, int min_value, int max_value,
 }  // namespace
 
 Solution Simple::Check(const Problem& p, const Solution& s) {
-  auto best_score = Evaluator::Apply(p, s).DScore();
+  auto best_score = Evaluator::Apply(p, s).FScore();
   auto new_s = s.Moves();
   int minx = 0, maxx = p.Target().dx, miny = 0, maxy = p.Target().dy;
   for (bool bfound = true; bfound;) {
@@ -63,7 +62,7 @@ Solution Simple::Check(const Problem& p, const Solution& s) {
       }
       try {
         m.type = Move::SKIP;
-        auto score = Evaluator::Apply(p, new_s).DScore();
+        auto score = Evaluator::Apply(p, new_s).FScore();
         if (score < best_score) {
           best_score = score;
           bfound = true;

@@ -7,6 +7,7 @@
 #include "common/base.h"
 #include "common/solvers/evaluator.h"
 
+#include <cmath>
 #include <string>
 #include <vector>
 
@@ -19,16 +20,19 @@ class Evaluator : public solvers::Evaluator {
    public:
     using TBase = solvers::Evaluator::Result;
 
-    int64_t cost_isl;
-    int64_t cost_sim;
+    double cost_isl;
+    double cost_sim;
 
    public:
     Result() {}
     Result(bool _correct, int64_t _score) : TBase(_correct, _score) {}
-    Result(bool _correct, int64_t isl, int64_t sim)
-        : TBase(_correct, isl + sim), cost_isl(isl), cost_sim(sim) {}
+    Result(bool _correct, double isl, double sim)
+        : TBase(_correct, round(isl) + round(sim)),
+          cost_isl(isl),
+          cost_sim(sim) {}
 
     int64_t DScore() const;
+    double FScore() const;
   };
 
   static Result Apply(const Problem &p, const std::vector<Move> &moves);

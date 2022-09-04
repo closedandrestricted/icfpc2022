@@ -19,8 +19,8 @@ void CheckWithAdjuster(const std::string& solver_name) {
     if (!s.Load(std::to_string(i), solver_name)) continue;
     auto snew = adj.Check(p, s);
     if (snew != s) {
-      auto score_old = Evaluator::Apply(p, s).DScore();
-      auto score_new = Evaluator::Apply(p, snew).DScore();
+      auto score_old = Evaluator::Apply(p, s).FScore();
+      auto score_new = Evaluator::Apply(p, snew).FScore();
       std::cout << "New solution from adjuster: " << score_old << "\t"
                 << score_new << std::endl;
       if (score_new < score_old) {

@@ -301,7 +301,7 @@ Solution DPOpt::Solve(const Problem& p) {
   }
   s.swap(s2);
 
-  auto final_score = Evaluator::Apply(p, s).DScore();
+  auto final_score = Evaluator::Apply(p, s).FScore();
   std::cout << "Expected cost = " << expected_cost
             << "\tfinal = " << final_score << std::endl;
   return Solution(p.Id(), s);
