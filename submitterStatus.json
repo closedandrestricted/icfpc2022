@@ -39,16 +39,16 @@
         }
     },
     "task4": {
-        "submission_id": 25021,
-        "submission_digest": "bcb508062d42db98400d80400578979a",
+        "submission_id": 25244,
+        "submission_digest": "445205134f4969e5231e1054c3d00182",
         "submission_status": {
-            "id": 25021,
+            "id": 25244,
             "problem_id": 4,
-            "submitted_at": "2022-09-03T23:34:26.547911Z",
+            "submitted_at": "2022-09-04T00:05:12.641805Z",
             "status": "SUCCEEDED",
-            "cost": 21675,
+            "cost": 21657,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_4_bbddd04d-f170-4b01-9c74-0d63481d72a4.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233435Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=a456b2f2c8b96d01a7613132493d6c5404c1c669741bcaf8d188d684291c2924"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_4_fbf92458-c8fc-4f9b-a490-2f7063a84dd1.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000517Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=399bc6f7666a8aa02e0098efc579df65325708f51e3489cc4ad74820a320c902"
         }
     },
     "task5": {
@@ -104,16 +104,16 @@
         }
     },
     "task9": {
-        "submission_id": 25025,
-        "submission_digest": "7120e115e1487f82d7481ff2c6d055d3",
+        "submission_id": 25245,
+        "submission_digest": "6fa3ce416fc1f7811352cd4a2e9fbdaa",
         "submission_status": {
-            "id": 25025,
+            "id": 25245,
             "problem_id": 9,
-            "submitted_at": "2022-09-03T23:34:28.046842Z",
+            "submitted_at": "2022-09-04T00:05:13.11747Z",
             "status": "SUCCEEDED",
-            "cost": 19723,
+            "cost": 19722,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_9_c604a66c-46ba-464a-be2f-94e049e4baec.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233436Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=6ee26e05c279481db70c5f4c506256d738ac1828bdfc28be4b64783b1c405c93"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_9_ccd9f894-4168-4515-8a1c-5f6df8237f5a.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000517Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=aaf1b29c1d5007c45f445dbd01ac01f7b1daf26947d4a9a7bf0153cfe12edc78"
         }
     },
     "task10": {
@@ -156,16 +156,16 @@
         }
     },
     "task13": {
-        "submission_id": 25029,
-        "submission_digest": "0c20750828183efe9007b8fb6b819eb8",
+        "submission_id": 25246,
+        "submission_digest": "b4c28d227cd6331ef860edbeafdea994",
         "submission_status": {
-            "id": 25029,
+            "id": 25246,
             "problem_id": 13,
-            "submitted_at": "2022-09-03T23:34:29.594168Z",
+            "submitted_at": "2022-09-04T00:05:13.606056Z",
             "status": "SUCCEEDED",
-            "cost": 21126,
+            "cost": 19671,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_13_334d7536-fd4a-49c3-8581-4816e3bdd649.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233437Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=342f9739b3a7287ed060866b11be6cafa6eed612f25e01da1a235b51a8fbeee2"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_13_09405884-870b-4693-85c8-619ca9cacbe7.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000517Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=314dec413b77a506ad66402919718e87467a609f0fc7e64f61ed2274f98db453"
         }
     },
     "task14": {
@@ -182,16 +182,16 @@
         }
     },
     "task15": {
-        "submission_id": 25031,
-        "submission_digest": "71f6c183276195e71939a10746516fb5",
+        "submission_id": 25247,
+        "submission_digest": "79f74dc36e7426e19b06cc615a219f75",
         "submission_status": {
-            "id": 25031,
+            "id": 25247,
             "problem_id": 15,
-            "submitted_at": "2022-09-03T23:34:30.486391Z",
+            "submitted_at": "2022-09-04T00:05:14.047978Z",
             "status": "SUCCEEDED",
-            "cost": 31664,
+            "cost": 31322,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_15_b5cc7852-2ca1-4d68-b132-7f23d3346e54.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233438Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=2dbf57c619106b1567b166cfb6fd5fb46b16ebcea0b2ce3b165d9c277ff5d7e5"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_15_6f5d3abd-8dcc-4553-b044-d9b46ce3733d.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000518Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=866af29de12c5212faa1163d9464d75302b7792ca13c901578818c6574e47f99"
         }
     },
     "task16": {
@@ -273,16 +273,16 @@
         }
     },
     "task22": {
-        "submission_id": 25038,
-        "submission_digest": "2aa876c6e998a056a055e1479bd7b514",
+        "submission_id": 25248,
+        "submission_digest": "1b7a2d962b7c883714d56f0dbcb0c8eb",
         "submission_status": {
-            "id": 25038,
+            "id": 25248,
             "problem_id": 22,
-            "submitted_at": "2022-09-03T23:34:33.03861Z",
+            "submitted_at": "2022-09-04T00:05:14.30406Z",
             "status": "SUCCEEDED",
-            "cost": 25664,
+            "cost": 25584,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_22_c6644e53-597f-44c5-b99a-da0d3d49877a.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233439Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=cc4ee04bf91ba75a19dc94f546f3528515c33d1369d8c1ec829eaed6f1ed5ee9"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_22_271714fa-87d7-49c9-80fb-4e5a20af6317.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000518Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=54ed059134df01e13175c1fee2df07de58c759c49c6e711abe4c7cefd89d8b53"
         }
     },
     "task23": {
@@ -299,29 +299,29 @@
         }
     },
     "task24": {
-        "submission_id": 25040,
-        "submission_digest": "8400b497640337028d10c5aef36f0b9b",
+        "submission_id": 25249,
+        "submission_digest": "e4369c4bd462d2c583eaeb94e75f5a7b",
         "submission_status": {
-            "id": 25040,
+            "id": 25249,
             "problem_id": 24,
-            "submitted_at": "2022-09-03T23:34:33.773907Z",
+            "submitted_at": "2022-09-04T00:05:14.719853Z",
             "status": "SUCCEEDED",
-            "cost": 20357,
+            "cost": 20356,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_24_0a3104c3-1d28-49ae-a2b6-ce73710dc60a.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233440Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=f00ac01ef37881fdd947cc5dda0c5ed98ed4ac045603538b054b267354482ec9"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_24_e431eb79-9bc7-454b-baea-9b7d8338b28f.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000518Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=9633700551b23f79970c7fea7f65d7ab2c507a6f71e4599ac56e47fd38a1e3dd"
         }
     },
     "task25": {
-        "submission_id": 25041,
-        "submission_digest": "54b0f190925d744464fd44503905f079",
+        "submission_id": 25250,
+        "submission_digest": "d9784049b7569740b0c2ab35442326d6",
         "submission_status": {
-            "id": 25041,
+            "id": 25250,
             "problem_id": 25,
-            "submitted_at": "2022-09-03T23:34:34.211912Z",
+            "submitted_at": "2022-09-04T00:05:15.36951Z",
             "status": "SUCCEEDED",
-            "cost": 27746,
+            "cost": 27637,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_25_a163e623-01f4-4f59-9fbd-559252556e1e.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T233440Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=7fb6b9e5ca49d3e5848b3b61f93c5833ef825f15a4d3848287c781d1683addb8"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_25_3da794f3-02c9-42e1-acc2-d33ddfb18264.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000519Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=170fea23992631adc873215e0e5f94bb8ceb90e4fa0c4ba71e3f0b3a25c0ed99"
         }
     },
     "task26": {
@@ -338,42 +338,42 @@
         }
     },
     "task27": {
-        "submission_id": 23637,
-        "submission_digest": "d41d8cd98f00b204e9800998ecf8427e",
+        "submission_id": 25251,
+        "submission_digest": "e5eab7ffd3cef120616b87f9575b78d5",
         "submission_status": {
-            "id": 23637,
+            "id": 25251,
             "problem_id": 27,
-            "submitted_at": "2022-09-03T21:14:43.951605Z",
+            "submitted_at": "2022-09-04T00:05:15.87397Z",
             "status": "SUCCEEDED",
-            "cost": 174950,
+            "cost": 69162,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_27_0048fee2-67c2-41d5-b75a-82c6a3bcf309.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T211449Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=d230bec39addf059394ada1118f7a00d95034a04e80ee76986f3f228deefd0a2"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_27_a990391c-083f-4650-b580-83c6da53ae46.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000519Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=84f6e7edeb77cf5688f638fc7747b3fc9abe8a72eccc98ba5978e1bbaf500fdc"
         }
     },
     "task28": {
-        "submission_id": 23638,
-        "submission_digest": "190adc88753a356981a80405bcff7e88",
+        "submission_id": 25252,
+        "submission_digest": "c000913e03c17544527c47cc61112107",
         "submission_status": {
-            "id": 23638,
+            "id": 25252,
             "problem_id": 28,
-            "submitted_at": "2022-09-03T21:14:44.140641Z",
+            "submitted_at": "2022-09-04T00:05:16.309276Z",
             "status": "SUCCEEDED",
-            "cost": 62131,
+            "cost": 38263,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_28_71163bce-d4db-4ba0-9edf-9f801f8def85.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T211449Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=632f90792a4e3ad6e63dd1274cfe03e561126c34badcecfb04d165e7a1e4b8dc"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_28_852925ec-8044-494a-a01e-b31527b3693e.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000519Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=387c127a9bdadfafaa744fdb86124e8c6c500f2bde5226f16310d0117d2c4dcf"
         }
     },
     "task29": {
-        "submission_id": 23639,
-        "submission_digest": "e4a743231b6cddc5f82c141206124bf1",
+        "submission_id": 25253,
+        "submission_digest": "df13c18fc08ab3e870db0c8f6391ad51",
         "submission_status": {
-            "id": 23639,
+            "id": 25253,
             "problem_id": 29,
-            "submitted_at": "2022-09-03T21:14:44.332678Z",
+            "submitted_at": "2022-09-04T00:05:16.762239Z",
             "status": "SUCCEEDED",
-            "cost": 80389,
+            "cost": 50072,
             "error": "",
-            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_29_b174c7f2-1653-4cca-a854-ac58400ee2b9.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220903T211449Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=a7f9364b94544194acd44dad5847bd727cee0e020c60b3d4166cf974748a8104"
+            "file_url": "https://minivinci-submissions.s3.amazonaws.com/user28_problem_29_4add2080-daaf-4922-9442-39ece71c059c.isl?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA35VZNBCZRCI77IEN%2F20220904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220904T000520Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=ee8759bb921f962d546cc119cd655b77a9b1d020bdcc80b28ed72112e288ddc1"
         }
     },
     "task30": {
