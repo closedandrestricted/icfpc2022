@@ -15,6 +15,8 @@
 
 using namespace src_solvers;
 
+GreedySplit3::GreedySplit3(unsigned) {}
+
 std::vector<Move> GreedySplit3::SolveI(
     const Image& target, const Image& current,
     const std::vector<Block>& current_blocks) {

@@ -6584,8 +6584,8 @@ static void defilter_paeth4(size_t rowbytes, unsigned char *row, const unsigned 
  * and license in this file.
  */
 
-#define png_aligncast(type, value) ((void*)(value))
-#define png_aligncastconst(type, value) ((const void*)(value))
+#define png_aligncast(type, value) ((type)(value))
+#define png_aligncastconst(type, value) ((type)(value))
 
 /* libpng row pointers are not necessarily aligned to any particular boundary,
  * however this code will only work with appropriate alignment. mips/mips_init.c

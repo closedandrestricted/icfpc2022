@@ -12,26 +12,30 @@
 #include <vector>
 
 namespace src_solvers {
-class GreedySplit3 : public Base {
+class GreedySwap : public Base {
  public:
   using TBase = Base;
 
  public:
-  GreedySplit3(unsigned);
+  GreedySwap(unsigned, Base::PSolver subsolver);
 
   PSolver Clone() const override {
-    return std::make_shared<GreedySplit3>(*this);
+    return std::make_shared<GreedySwap>(*this);
   }
 
   bool SkipSolutionRead() const override { return true; }
 
-  std::string Name() const override { return "greedy_split3"; }
+  std::string Name() const override { return "greedy_swap"; }
 
-  std::vector<Move> SolveI(const Image& target, const Image& current,
-                           const std::vector<Block>& current_blocks);
+  static std::vector<Move> SolveI(const Image& target, const Image& current,
+                                  const std::vector<Block>& current_blocks);
 
   std::vector<Move> SolveI(const Image& target, const Canvas& canvas);
 
   Solution Solve(const Problem& p) override;
+
+private:
+    Base::PSolver subsolver_;
 };
 }  // namespace src_solvers
+
