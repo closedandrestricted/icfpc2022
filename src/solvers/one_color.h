@@ -13,7 +13,7 @@ class OneColor : public Base {
   using TBase = Base;
 
  public:
-  OneColor(unsigned) {}
+  OneColor(unsigned);
 
   PSolver Clone() const override { return std::make_shared<OneColor>(*this); }
 

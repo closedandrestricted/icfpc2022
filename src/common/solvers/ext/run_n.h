@@ -11,8 +11,9 @@ namespace ext {
 // Single thread version
 template <class TSolver>
 inline void RunN(TSolver& s, unsigned first_problem, unsigned last_problem) {
-  for (unsigned i = first_problem; i <= last_problem; ++i)
+  for (unsigned i = first_problem; i <= last_problem; ++i) {
     RunOne<TSolver>(s, std::to_string(i));
+  }
 }
 
 // Multi threads version

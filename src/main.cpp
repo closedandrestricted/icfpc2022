@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
   InitCommaneLine(cmd);
   cmd.Parse(argc, argv);
 
-  auto mode = cmd.GetString("mode");
+  const auto mode = cmd.GetString("mode");
   if (mode == "eval") {
     EvaluateSolution(cmd.GetString("solution"));
   } else if (mode == "adjust") {

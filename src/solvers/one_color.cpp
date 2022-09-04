@@ -8,6 +8,8 @@
 
 using namespace src_solvers;
 
+OneColor::OneColor(unsigned) {}
+
 Solution OneColor::Solve(const Problem& p) {
   auto& i = p.Target();
   auto& c = p.InitialCanvas();
