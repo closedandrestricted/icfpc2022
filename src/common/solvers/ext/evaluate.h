@@ -20,9 +20,15 @@ inline bool UpdateBest(const std::string& id, const std::string& solver_name,
   TProblem p;
   if (!p.Load(id)) return false;
   TSolution s;
-  if (!s.Load(id, solver_name)) return false;
+  if (!s.Load(id, solver_name)) {
+      std::cerr << "Can not load solution for " << id << std::endl;
+      return false;
+  }
   auto r = TEvaluator::Apply(p, s);
-  if (!r.correct) return false;
+  if (!r.correct) {
+      std::cerr << "Incorrect solution for " << id << std::endl;
+      return false;
+  }
   TSolution sbest;
   if (!sbest.Load(id, best_name)) {
     s.Save(best_name);
@@ -30,6 +36,7 @@ inline bool UpdateBest(const std::string& id, const std::string& solver_name,
   }
   auto rbest = TEvaluator::Apply(p, sbest);
   if (TEvaluator::Compare(r, rbest)) {
+    std::cerr << "Update solution for " << id << std::endl;
     s.Save(best_name);
     return true;
   }
