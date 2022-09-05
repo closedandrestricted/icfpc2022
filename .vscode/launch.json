@@ -15,7 +15,7 @@
                 "-solver",
                 "dp2",
                 "-first_problem",
-                "26",
+                "1",
                 // "update",
                 // "-solution",
                 // "webedit",

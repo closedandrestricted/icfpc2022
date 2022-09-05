@@ -90,7 +90,6 @@ std::vector<Move> DPOpt2::SolveIY(const Image& target, const Canvas& canvas,
 
   // Build solution
   // TODO:
-  //   1. Check both direction
   //   3. Use left-down part for construction + swap
   t.Start();
   nx *= 3;
@@ -98,7 +97,7 @@ std::vector<Move> DPOpt2::SolveIY(const Image& target, const Canvas& canvas,
   unsigned cindex = canvas.index;
   std::string sindex = canvas_block.id;
   double expected_score2 = 0.;
-  std::vector<std::pair<double, unsigned>> dpx2(nx);
+  std::vector<std::pair<double, unsigned>> dpx2(nx), dpx3(nx);
   for (unsigned j1 = vy.size() - 1; j1 > 0;) {
     unsigned j0 = dpy[j1].second;
     vx = cmpr.CompressX(Block{0, target.dx, vy[j0], vy[j1], ""}, nx, true);
@@ -132,19 +131,53 @@ std::vector<Move> DPOpt2::SolveIY(const Image& target, const Canvas& canvas,
       }
       dpx2[i1] = {best_score_i, best_i0};
     }
-    expected_score2 += dpx2.back().first;
+
+    dpx3[0] = {0., 0};
+    for (unsigned i1 = 1; i1 < vx.size(); ++i1) {
+      double best_score_i = 1e16;
+      unsigned best_i0 = 0;
+      for (unsigned i0 = i1; i0-- > 0;) {
+        unsigned i1a = vx.size() - 1 - i1, i0a = vx.size() - 1 - i0;
+        Block b{vx[i1a], vx[i0a], vy[j0], vy[j1], ""};
+        double score_sim = opt::Color::ApproxCost(b, target);
+        if (best_score_i <= score_sim) break;
+        double score_color =
+            Cost(pid, Move::COLOR, tsize, (target.dx - vx[i1a]) * vy[j1]);
+        double score_split_merge =
+            Cost(pid, Move::LINE_CUT, target.dy, vy[j1]) +
+            Cost(pid, Move::MERGE, tsize,
+                 vy[j1] * std::max(vx[i1a], target.dx - vx[i1a]));
+        auto score_i0 =
+            score_sim + score_color + score_split_merge + dpx3[i0].first;
+        if (best_score_i > score_i0) {
+          best_score_i = score_i0;
+          best_i0 = i0;
+        }
+      }
+      dpx3[i1] = {best_score_i, best_i0};
+    }
+
+    bool b23 = (dpx2.back().first <= dpx3.back().first);
+    auto& dpxb = b23 ? dpx2 : dpx3;
+    expected_score2 += b23 ? dpx2.back().first : dpx3.back().first;
 
     for (unsigned i1 = vx.size() - 1; i1 > 0;) {
-      unsigned i0 = dpx2[i1].second;
+      unsigned i0 = dpxb[i1].second;
+      unsigned i0a = b23 ? i0 : vx.size() - 1 - i0;
+      unsigned i1a = b23 ? i1 : vx.size() - 1 - i1;
       if (vx[i1] == target.dx) {
         s.push_back(Move(Move::COLOR, sindex,
                          opt::Color::Median(opt::Color::Points(
-                             {vx[i0], vx[i1], vy[j0], vy[j1], ""}, target))));
+                             {(b23 ? vx[i0a] : vx[i1a]),
+                              (b23 ? vx[i1a] : vx[i0a]), vy[j0], vy[j1], ""},
+                             target))));
       } else {
-        s.push_back(Move(Move::LINE_CUT, sindex, vx[i1], 0));
-        s.push_back(Move(Move::COLOR, sindex + ".0",
+        s.push_back(Move(Move::LINE_CUT, sindex, vx[i1a], 0));
+        s.push_back(Move(Move::COLOR, sindex + (b23 ? ".0" : ".1"),
                          opt::Color::Median(opt::Color::Points(
-                             {vx[i0], vx[i1], vy[j0], vy[j1], ""}, target))));
+                             {(b23 ? vx[i0a] : vx[i1a]),
+                              (b23 ? vx[i1a] : vx[i0a]), vy[j0], vy[j1], ""},
+                             target))));
         s.push_back(Move(Move::MERGE, sindex + ".0", sindex + ".1"));
         sindex = std::to_string(++cindex);
       }
