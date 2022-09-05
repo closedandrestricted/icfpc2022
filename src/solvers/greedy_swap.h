@@ -19,7 +19,7 @@ class GreedySwap : public Base {
  public:
   GreedySwap(unsigned, Base::PSolver subsolver);
 
-  PSolver Clone() const override { return std::make_shared<GreedySwap>(*this); }
+  PSolver Clone() const override;
 
   bool SkipSolutionRead() const override { return true; }
 

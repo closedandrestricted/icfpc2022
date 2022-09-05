@@ -14,9 +14,9 @@ class DPOpt2 : public Base {
   using TBase = Base;
   unsigned max_xy;
 
- protected:
-  std::vector<Move> SolveIY(const Image& target, const Canvas& canvas,
-                            unsigned nx, unsigned ny);
+ public:
+  static std::vector<Move> SolveIY(const Image& target, const Canvas& canvas,
+                                   unsigned nx, unsigned ny);
 
  public:
   DPOpt2(unsigned _max_xy) : max_xy(_max_xy) {}
