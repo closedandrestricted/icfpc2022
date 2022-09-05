@@ -66,7 +66,7 @@ def swap(blocks, b1, b2):
     blocks[b1], blocks[b2] = blocks[b2], blocks[b1]
 
 
-PROBLEMS = range(1, 31)
+PROBLEMS = range(1, 26)
 
 SZ = 400
 CHUNK_SZ = 100
