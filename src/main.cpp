@@ -66,6 +66,8 @@ int main(int argc, char** argv) {
     EvaluateSolution(cmd.GetString("solution"));
   } else if (mode == "adjust") {
     CheckWithAdjuster<adj::Simple>(cmd.GetString("solution"));
+  } else if (mode == "adjustmt") {
+    CheckWithAdjusterMT<adj::Simple>(cmd.GetString("solution"), cmd.GetInt("nthreads"));
   } else if (mode == "update") {
     UpdateBest(cmd.GetString("solution"));
   } else if (mode == "run") {
