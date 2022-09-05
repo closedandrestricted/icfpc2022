@@ -22,6 +22,10 @@ class DPProxy : public Base {
 
   std::string Name() const override { return "dpp_" + std::to_string(max_xy); }
 
+  static std::vector<Move> MergeBlocks(const Canvas& canvas);
+
+  std::vector<Move> SolveI(const Image& target, const Canvas& canvas);
+
   Solution Solve(const Problem& p) override;
 };
 }  // namespace src_solvers

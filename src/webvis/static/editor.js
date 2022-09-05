@@ -2,25 +2,26 @@
 
 
 
-function colorRegion(x, w, y, h, r, g, b, a) {
+// x, y denote coordinates relative to block
+// pngx, pngy are x and y on PNG picture of the origin of the block
+function colorRegion(x, w, y, h, rgba, pngx, pngy) {
     return {
         x: x,
         w: w,
         y: y,
         h: h,
-        r: r,
-        g: g,
-        b: b,
-        a: a,
+        rgba: rgba,
+        pngx: pngx + 0, // undefined to NaN
+        pngy: pngy + 0, // undefined to NaN
     }
 }
 
-function fill(block, r, g, b, a) {
-    block.crs = [colorRegion(0, block.w, 0, block.h, r, g, b, a)]
+function fill(block, rgba) {
+    block.crs = [colorRegion(0, block.w, 0, block.h, rgba)]
 }
 
 function translate(crs, x, y) {
-    return crs.map(cr => colorRegion(cr.x + x, cr.w, cr.y + y, cr.h, cr.r, cr.g, cr.b, cr.a))
+    return crs.map(cr => colorRegion(cr.x + x, cr.w, cr.y + y, cr.h, cr.rgba, cr.pngx - x, cr.pngy + y))
 }
 
 function clip(x, lo, hi) {
@@ -43,7 +44,7 @@ function trim(cr, w, h) {
     if (y2 < y1) throw cr
     if (x2 < x1) throw cr
 
-    return colorRegion(x1, x2 - x1, y1, y2 - y1, cr.r, cr.g, cr.b, cr.a)
+    return colorRegion(x1, x2 - x1, y1, y2 - y1, cr.rgba, cr.pngx, cr.pngy)
 }
 
 function trim_all(crs, w, h) {
@@ -119,7 +120,7 @@ function apply_cutY(blocks, id, y) {
 }
 
 function apply_color(blocks, id, r, g, b, a) {
-    fill(blocks[id], r, g, b, a);
+    fill(blocks[id], [r, g, b, a]);
 }
 
 function swap_props(obj1, obj2, name) {
@@ -173,18 +174,47 @@ function draw_crs(crs) {
     let [w, h] = get_w_h()
 
     d3.select("#svg").html("")
+
+    let plain_crs = []
+    let image_crs = []
+
+    crs.forEach(cr => {
+        if (cr.rgba) {
+            plain_crs.push(cr);
+        } else {
+            image_crs.push(cr);
+        }
+    })
+
     d3.select("#svg")
         .selectAll(".rect")
-        .data(crs)
+        .data(plain_crs)
         .enter()
         .append("rect")
         .attr("x", d => 2 * d.x)
         .attr("y", d => 2 * (h - d.y - d.h))
         .attr("width", d => 2 * d.w - 1)
         .attr("height", d => 2 * d.h - 1)
-        .attr("fill", d => "rgba(" + d.r + "," + d.g + "," + d.b + "," + d.a + ")")
-}
+        .attr("fill", d => "rgba(" + d.rgba[0] + "," + d.rgba[1] + "," + d.rgba[2] + "," + d.rgba[3] + ")")
 
+
+    // console.log(image_crs)
+    d3.select("#svg")
+        .selectAll(".svg")
+        .data(image_crs)
+        .enter()
+        .append("svg")
+        .attr("x", d => 2 * d.x)
+        .attr("y", d => 2 * (h - d.y - d.h))
+        .attr("width", d => 2 * d.w - 1)
+        .attr("height", d => 2 * d.h - 1)
+        .append("image")
+        .attr("x", d => -2 * d.pngx - 2 * d.x)
+        .attr("y", d => -2 * d.pngy - 2 * (h - d.y - d.h))
+        .attr("width", d => 2 * w - 1)
+        .attr("height", d => 2 * h - 1)
+        .attr("href", "/source?id=" + globProblemId)
+}
 
 function draw_regions(blocks) {
 
@@ -243,7 +273,7 @@ function draw_regions(blocks) {
     for (const [key, block] of Object.entries(blocks)) {
         if (key != "last_id" && key != "penalty") {
             blockarr.push(block);
-            crs.push(colorRegion(block.x, block.w, block.y, block.h, 0, 0, 0, 255));
+            crs.push(colorRegion(block.x, block.w, block.y, block.h, [0, 0, 0, 255]));
             crss.push(translate(block.crs, block.x, block.y));
         }
     }
@@ -287,11 +317,27 @@ function get_block_id_for_coords(blocks, x, y) {
     throw "did not find block for coords"
 }
 
+// x, y are relative to block origin
+function get_cr_color(cr, x, y) {
+    try {
+        if (cr.rgba) {
+            return cr.rgba
+        } else {
+            return srcGlobPX[cr.pngx + x][cr.pngy + y]
+        }
+    } catch (e) {
+        console.log(cr)
+        console.log(x, y)
+        throw (e)
+    }
+}
+
+// get pixel color where x, y are absolute coordinates
 function find_pixel_color(block, x, y) {
     for (let i = 0; i < block.crs.length; i++) {
         let cr = block.crs[i]
         if (rect_contains_xy(cr, x - block.x, y - block.y)) {
-            return [cr.r, cr.g, cr.b, cr.a]
+            return get_cr_color(cr, x - block.x, y - block.y)
         }
     }
     console.log(x, y)
@@ -356,7 +402,7 @@ function auto_solve(initial) {
     let dx = blocks["0"].w
     let dy = blocks["0"].h
     text = ''
-    console.log(initial)
+    // console.log(initial)
     for (let x = dx / 2; x <= initial.width; x += dx) {
         for (let y = dy / 2 + dy; y <= initial.height; y += dy) {
             apply_solution(blocks, text)
@@ -430,10 +476,18 @@ function blocks_init(initial) {
             jsonblock.bottomLeft[1],
             jsonblock.topRight[1] - jsonblock.bottomLeft[1]
         ]
-        let [r, g, b, a] = jsonblock.color
+        let rgba = undefined
+        let pngx = undefined
+        let pngy = undefined
+        if (jsonblock.color) {
+            rgba = jsonblock.color
+        } else {
+            pngx = jsonblock.pngBottomLeftPoint[0]
+            pngy = jsonblock.pngBottomLeftPoint[1]
+        }
         blocks[jsonblock.blockId] = newblock(
             jsonblock.blockId, x, w, y, h,
-            [colorRegion(0, w, 0, h, r, g, b, a)])
+            [colorRegion(0, w, 0, h, rgba, pngx, pngy)])
     })
     blocks.last_id = initial.blocks.length - 1
     return blocks;
@@ -501,14 +555,15 @@ function apply_solution(blocks, text) {
     draw_regions(blocks);
 }
 
-var canvas = document.createElement('canvas');
-var globPX = undefined
+var globPX = []
+var srcGlobPX = []
 
-function setCanvas(img) {
+function setCanvas(img, globPX) {
+    var canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-    globPX = []
+    while (globPX.length > 0) globPX.pop(); // clear
     let ctx = canvas.getContext('2d')
     for (let x = 0; x < img.width; x++) {
         let px = []
@@ -534,17 +589,17 @@ function insertTextCommand(text) {
     node.value = node.value.substring(0, b) + text + node.value.substring(b)
 }
 
-
+// here all crss are block-less, i.e. their offsets are absolute
 function diffPenalty(crss) {
     let result = 0
     let [w, h] = get_w_h()
     crss.forEach(crs => {
         crs.forEach(cr => {
-            let rgba = [cr.r, cr.g, cr.b, cr.a]
             for (let dx = 0; dx < cr.w; dx++) {
                 for (let dy = 0; dy < cr.h; dy++) {
                     let x = cr.x + dx
                     let y = h - cr.y - dy - 1
+                    let rgba = get_cr_color(cr, x, y)
                     let px = globPX[x][y]
                     let dresult = 0
                     for (let i = 0; i < 4; i++) {
@@ -565,77 +620,96 @@ function diffPenalty(crss) {
     return Math.round(result * 0.005)
 }
 
-function set_solution() {
+
+async function set_solution() {
     var id = d3.select("#problem_id").node().value;
     var sol_folder = d3.select("#solution_folder").node().value || "best";
-    d3.json("/initial?id=" + id).then(initial => {
-        d3.select('#auto_solve').on('click', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            console.log('autosolve')
-            auto_solve(initial)
-        })
-        d3.text("/solution?id=" + id + "&kind=" + sol_folder).then(function (text) {
-            d3.select("#commands").text(text)
-            d3.select("#commands")
-                .on("select", (e) => {
-                    let node = d3.select("#commands").node();
-                    b = node.selectionEnd
-                    try_apply_solution(initial, node.value.substring(0, b))
-                })
 
-            d3.select('#solution_draw').on("click", function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                try_apply_solution(initial, d3.select("#commands").node().value)
-            })
-            d3.select("#png-problem")
-                .on("mousedown", (ev) => {
-                    if (ev.altKey) {
-                        var [w, h] = get_w_h()
-                        const MAX = 10;
-                        let [bestx, besty, bestd] = [ev.offsetX, ev.offsetY, 0]
-                        for (let dx = -MAX; dx <= MAX; dx++) {
-                            for (let dy = -MAX; dy <= MAX; dy++) {
-                                var x = ev.offsetX + dx;
-                                var y = ev.offsetY + dy;
-                                if (x <= 0 || y <= 0 || x >= w || y >= h) {
-                                    continue;
-                                }
-                                let px = [];
-                                px.push(canvas.getContext('2d').getImageData(x, y, 1, 1).data)
-                                px.push(canvas.getContext('2d').getImageData(x, y - 1, 1, 1).data)
-                                px.push(canvas.getContext('2d').getImageData(x - 1, y - 1, 1, 1).data)
-                                px.push(canvas.getContext('2d').getImageData(x - 1, y, 1, 1).data)
-                                let sumdist = 0
-                                for (let i = 0; i < 4; i++) {
-                                    p1 = px[i]
-                                    p2 = px[(i + 1) % 4]
-                                    sumdist += Math.hypot(...p1.map((d, i) => d - p2[i]))
-                                }
-                                if (sumdist > bestd) {
-                                    bestx = x
-                                    besty = y
-                                    bestd = sumdist
-                                }
-                            }
-                        }
-                        insertTextCommand("[" + bestx + ", " + (h - besty - 1) + "]");
-                    } else {
-                        var rgba = canvas.getContext('2d').getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
-                        insertTextCommand("[" + rgba + "]");
-                    }
-                })
-                .on("mousemove", (ev) => {
-                    if (ev.altKey) {
-                        d3.select("#color-coord-sel").select("i").text("COORDS")
-                    } else {
-                        d3.select("#color-coord-sel").select("i").text("COLOR")
-                    }
-                })
-            try_apply_solution(initial, text)
-        });
+    let initial = await d3.json("/initial?id=" + id)
+
+    if (initial.blocks["0"].pngBottomLeftPoint) {
+        let srcImg = await d3.image("/source?id=" + globProblemId)
+        d3.select("#source-hidden-div")
+            .selectAll("img")
+            .remove()
+        d3.select("#source-hidden-div")
+            .node()
+            .appendChild(srcImg)
+        d3.select("#source-hidden-div")
+            .select("img")
+            .attr("id", "source-hidden-img")
+
+        setCanvas(document.getElementById('source-hidden-img'), srcGlobPX)
+    }
+
+    d3.select('#auto_solve').on('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        console.log('autosolve')
+        auto_solve(initial)
     })
+
+    let text = await d3.text("/solution?id=" + id + "&kind=" + sol_folder)
+
+    d3.select("#commands").text(text)
+
+    d3.select("#commands")
+        .on("select", (e) => {
+            let node = d3.select("#commands").node();
+            b = node.selectionEnd
+            try_apply_solution(initial, node.value.substring(0, b))
+        })
+
+    d3.select('#solution_draw').on("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        try_apply_solution(initial, d3.select("#commands").node().value)
+    })
+    d3.select("#png-problem")
+        .on("mousedown", (ev) => {
+            if (ev.altKey) {
+                var [w, h] = get_w_h()
+                const MAX = 10;
+                let [bestx, besty, bestd] = [ev.offsetX, ev.offsetY, 0]
+                for (let dx = -MAX; dx <= MAX; dx++) {
+                    for (let dy = -MAX; dy <= MAX; dy++) {
+                        var x = ev.offsetX + dx;
+                        var y = ev.offsetY + dy;
+                        if (x <= 0 || y <= 0 || x >= w || y >= h) {
+                            continue;
+                        }
+                        let px = [];
+                        px.push(globPX[x][y])
+                        px.push(globPX[x][y - 1])
+                        px.push(globPX[x - 1][y - 1])
+                        px.push(globPX[x - 1][y])
+                        let sumdist = 0
+                        for (let i = 0; i < 4; i++) {
+                            p1 = px[i]
+                            p2 = px[(i + 1) % 4]
+                            sumdist += Math.hypot(...p1.map((d, i) => d - p2[i]))
+                        }
+                        if (sumdist > bestd) {
+                            bestx = x
+                            besty = y
+                            bestd = sumdist
+                        }
+                    }
+                }
+                insertTextCommand("[" + bestx + ", " + (h - besty - 1) + "]");
+            } else {
+                var rgba = globPX[ev.offsetX][ev.offsetY]
+                insertTextCommand("[" + rgba + "]");
+            }
+        })
+        .on("mousemove", (ev) => {
+            if (ev.altKey) {
+                d3.select("#color-coord-sel").select("i").text("COORDS")
+            } else {
+                d3.select("#color-coord-sel").select("i").text("COLOR")
+            }
+        })
+    try_apply_solution(initial, text)
 }
 
 var globProblemId = undefined
@@ -656,7 +730,7 @@ function set_problem() {
             .attr("style", "image-rendering: crisp-edges")
 
         var img = document.getElementById('png-problem');
-        setCanvas(img)
+        setCanvas(img, globPX)
         set_solution()
     })
 }

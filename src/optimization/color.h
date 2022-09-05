@@ -16,5 +16,7 @@ class Color {
   static Pixel Median(const std::vector<Pixel>& points);
   static Pixel MinCost(const std::vector<Pixel>& points, const Pixel& initial);
   static Pixel MinCost(const std::vector<Pixel>& points);
+
+  static double ApproxCost(const Block& block, const Image& image);
 };
 }  // namespace opt

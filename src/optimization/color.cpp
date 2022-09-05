@@ -91,3 +91,26 @@ Pixel Color::MinCost(const std::vector<Pixel>& points) {
   double s1 = Cost(points, c1), s2 = Cost(points, c2);
   return MinCost(points, ((s1 < s2) ? c1 : c2));
 }
+
+double Color::ApproxCost(const Block& block, const Image& image) {
+  assert(block.Size() > 0);
+  std::vector<std::vector<uint8_t>> vv(4);
+  for (unsigned x = block.x0; x < block.x1; ++x) {
+    for (unsigned y = block.y0; y < block.y1; ++y) {
+      auto& p = image(x, y);
+      for (unsigned i = 0; i < 4; ++i) vv[i].push_back(p.rgba[i]);
+    }
+  }
+  unsigned m = vv[0].size() / 2;
+  Pixel r;
+  for (unsigned i = 0; i < 4; ++i) {
+    std::nth_element(vv[i].begin(), vv[i].begin() + m, vv[i].end());
+    r.rgba[i] = vv[i][m];
+  }
+  double s = 0;
+  for (unsigned x = block.x0; x < block.x1; ++x) {
+    for (unsigned y = block.y0; y < block.y1; ++y)
+      s += Distance(r, image(x, y));
+  }
+  return s / 200;
+}
