@@ -36,6 +36,21 @@ class ProblemHandler(tornado.web.RequestHandler):
             self.write(data)
 
 
+class SourceHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        header = "Content-Type"
+        body = "image/png"
+        self.set_header(header, body)
+
+    def get(self):
+        id = self.get_argument('id')
+        path = os.path.join(this_dir, '../../problems/%s.source.png' % id)
+        print("Serving " + path)
+        with open(path, 'rb') as f:
+            data = f.read()
+            self.write(data)
+
+
 class InitialHandler(tornado.web.RequestHandler):
     def prepare(self):
         header = "Content-Type"
@@ -79,6 +94,7 @@ def make_app():
         (r"/problem", ProblemHandler),
         (r"/solution", SolutionHandler),
         (r"/initial", InitialHandler),
+        (r"/source", SourceHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler,
          {"path": os.path.join(this_dir, "static")}),
     ], debug=True)
