@@ -13,7 +13,7 @@
                 "-mode",
                 "run",
                 "-solver",
-                "dpp",
+                "dp2",
                 // "update",
                 // "-solution",
                 // "webedit",

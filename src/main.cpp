@@ -1,6 +1,7 @@
 #include "adjusters/simple.h"
 #include "settings.h"
 #include "solvers/dp_opt.h"
+#include "solvers/dp_opt2.h"
 #include "solvers/dp_proxy.h"
 #include "solvers/greedy_split.h"
 #include "solvers/greedy_split2.h"
@@ -41,6 +42,8 @@ src_solvers::Base::PSolver CreateSolver(const files::CommandLine& cmd,
     return std::make_shared<src_solvers::DPOpt>(timelimit);
   } else if (solver_name == "dpp") {
     return std::make_shared<src_solvers::DPProxy>(timelimit);
+  } else if (solver_name == "dp2") {
+    return std::make_shared<src_solvers::DPOpt2>(timelimit);
   } else if (solver_name == "greedy_swap") {
     return std::make_shared<src_solvers::GreedySwap>(
         timelimit, CreateSolver(cmd, cmd.GetString("solver2")));
