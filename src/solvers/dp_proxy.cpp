@@ -15,13 +15,11 @@
 
 using namespace src_solvers;
 
-Solution DPProxy::Solve(const Problem& p) {
-  unsigned pid = p.Index();
-  auto& target = p.Target();
-  auto canvas = p.InitialCanvas();
-  // auto& current = canvas.GetImage();
+std::vector<Move> DPProxy::MergeBlocks(const Canvas& canvas) {
+  unsigned pid = canvas.pid;
+  auto& image = canvas.GetImage();
   auto initial_blocks = canvas.GetBlocks();
-  if (initial_blocks.size() == 1) return {p.Id(), {}};
+  if (initial_blocks.size() == 1) return {};
 
   std::vector<unsigned> vhsx, vhsy;
   for (auto& b : initial_blocks) {
@@ -36,7 +34,7 @@ Solution DPProxy::Solve(const Problem& p) {
   unsigned nx = vhsx.size() - 1, ny = vhsy.size() - 1;
   Assert(initial_blocks.size() == nx * ny);
   Assert(nx == ny);
-  unsigned dxy = target.dx / nx;
+  unsigned dxy = image.dx / nx;
   for (unsigned i = 0; i < nx; ++i) {
     Assert(vhsx[i + 1] - vhsx[i] == dxy);
     Assert(vhsy[i + 1] - vhsy[i] == dxy);
@@ -44,27 +42,24 @@ Solution DPProxy::Solve(const Problem& p) {
 
   double base_score = 0.0;
   for (unsigned i = 1; i < nx; ++i)
-    base_score += ny * Cost(pid, Move::MERGE, target.Size(), dxy * dxy * i);
+    base_score += ny * Cost(pid, Move::MERGE, image.Size(), dxy * dxy * i);
   for (unsigned i = 1; i < ny; ++i)
-    base_score += Cost(pid, Move::MERGE, target.Size(), target.dx * dxy * i);
-  //   std::cout << "Problem " << pid << ":\t" << nx << "\t" << ny << "\t"
-  //             << base_score << std::endl;
+    base_score += Cost(pid, Move::MERGE, image.Size(), image.dx * dxy * i);
 
   unsigned best_l = 0;
   double best_score = base_score;
   for (unsigned l = 1; l < nx; ++l) {
     double score = 0;
     for (unsigned i = 1; i < nx; ++i)
-      score += l * Cost(pid, Move::MERGE, target.Size(), dxy * dxy * i);
+      score += l * Cost(pid, Move::MERGE, image.Size(), dxy * dxy * i);
     for (unsigned i = 1; i < l; ++i)
-      score += Cost(pid, Move::MERGE, target.Size(), target.dx * i);
+      score += Cost(pid, Move::MERGE, image.Size(), image.dx * i);
     for (unsigned i = 2; i <= nx; ++i)
-      score += Cost(pid, Move::LINE_CUT, target.Size(), dxy * dxy * i * l);
+      score += Cost(pid, Move::LINE_CUT, image.Size(), dxy * dxy * i * l);
     for (unsigned i = l; i < ny; ++i)
-      score += nx * Cost(pid, Move::MERGE, target.Size(), dxy * dxy * i);
+      score += nx * Cost(pid, Move::MERGE, image.Size(), dxy * dxy * i);
     for (unsigned i = 1; i < nx; ++i)
-      score += Cost(pid, Move::MERGE, target.Size(), target.dy * dxy * i);
-    // std::cout << "\t" << l << "\t" << score << std::endl;
+      score += Cost(pid, Move::MERGE, image.Size(), image.dy * dxy * i);
     if (best_score < score) {
       best_score = score;
       best_l = l;
@@ -105,12 +100,22 @@ Solution DPProxy::Solve(const Problem& p) {
     vvid[0][0] = std::to_string(++bgindex);
   }
 
+  return moves;
+}
+
+std::vector<Move> DPProxy::SolveI(const Image& target,
+                                  const Canvas& initial_canvas) {
+  Canvas canvas = initial_canvas;
+  auto moves = MergeBlocks(canvas);
   for (auto& m : moves) canvas.Apply(m);
   DPOpt dp(max_xy);
   auto s2 = dp.SolveI(target, canvas);
   moves.insert(moves.end(), s2.begin(), s2.end());
+  return moves;
+}
 
-  std::cout << "Done" << std::endl;
+Solution DPProxy::Solve(const Problem& p) {
+  auto moves = SolveI(p.Target(), p.InitialCanvas());
   auto final_score = Evaluator::Apply(p, moves).FScore();
   std::cout << "Final cost = " << final_score << std::endl;
   std::cout << "Done with " << p.Id() << std::endl;

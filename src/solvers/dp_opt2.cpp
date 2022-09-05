@@ -2,6 +2,7 @@
 
 #include "block.h"
 #include "cost.h"
+#include "dp_proxy.h"
 #include "evaluator.h"
 #include "optimization/color.h"
 #include "optimization/compression.h"
@@ -90,7 +91,6 @@ std::vector<Move> DPOpt2::SolveIY(const Image& target, const Canvas& canvas,
   // Build solution
   // TODO:
   //   1. Check both direction
-  //   2. More points for x
   //   3. Use left-down part for construction + swap
   t.Start();
   nx *= 3;
@@ -166,10 +166,15 @@ std::vector<Move> DPOpt2::SolveIY(const Image& target, const Canvas& canvas,
   return s;
 }
 
-std::vector<Move> DPOpt2::SolveI(const Image& target, const Canvas& canvas) {
+std::vector<Move> DPOpt2::SolveI(const Image& target,
+                                 const Canvas& original_canvas) {
+  Canvas canvas = original_canvas;
+  auto sbase = DPProxy::MergeBlocks(canvas);
+  for (auto& m : sbase) canvas.Apply(m);
   unsigned nxy = unsigned(sqrt(double(max_xy)));
   auto s = SolveIY(target, canvas, nxy, nxy);
-  return s;
+  sbase.insert(sbase.end(), s.begin(), s.end());
+  return sbase;
 }
 
 Solution DPOpt2::Solve(const Problem& p) {
